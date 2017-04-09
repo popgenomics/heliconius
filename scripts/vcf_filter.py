@@ -260,7 +260,7 @@ for i in range(len(list_of_contigs)):
 		# deal with GFF file:
 		nGenes = nGenes_per_contigs[i]
 		extractGene(contigName, nGenes, alignment, gff, genome, species)
-		print("end of treatment of contig {0} over {1}: {2} {3})".format(i, len(list_of_contigs), list_of_contigs[i], strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+#		print("end of treatment of contig {0} over {1}: {2} {3})".format(i, len(list_of_contigs), list_of_contigs[i], strftime("%Y-%m-%d %H:%M:%S", gmtime())))
 
 
 
