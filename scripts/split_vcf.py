@@ -3,8 +3,13 @@
 
 import sys
 
-vcfFileName = "/home/roux/Documents/ABCheliconius/test_ama10.Hmel2.bwa.default.HC.vcf"
-species = "mel"
+#vcfFileName = "/home/roux/Documents/ABCheliconius/test_ama10.Hmel2.bwa.default.HC.vcf"
+#species = "mel"
+
+
+vcfFileName = sys.argv[1]
+species = sys.argv[2]
+
 
 group_previous_locus = -1
 
