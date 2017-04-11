@@ -2,12 +2,60 @@
 #from Bio.Seq import Seq
 from time import gmtime, strftime
 import sys
+import os
+
+if len(sys.argv) != 7:
+	print("\nvcf_filter.py extract CDS (i.e: concatenated exons) from a genome, using informations")
+	print("get from VCF (about coverage) and gff-file (positions of exons).")
+	print("\nIt outputs one Fasta alignment per CDS.")
+	print("\n\033[1;33m Example: ./vcf_filter.py Hmel2.fa Hmel2.gff subVCF_ama_0.vcf 3 corr_table_ama.txt ama\033[0m\n")
+	print("\t\targ1 = name of the reference genome in Fasta (used to produce VCF + GFF files)")
+	print("\t\targ2 = name of the GFF file, corresponding to the reference genome in Fasta")
+	print("\t\targ3 = name of the \033[1;33msub-VCF file\033[0m produced after splitting the VCF using https://github.com/popgenomics/heliconius/blob/master/scripts/split_vcf.cpp")
+	print("\t\targ4 = integer, corresponding to the minimum number of reads for calling ONE ALLELE at ONE GENE COPY")
+	print("\t\targ5 = name of the correspondance table produced by https://github.com/popgenomics/heliconius/blob/master/scripts/split_vcf.cpp")
+	print("\t\targ6 = single word describing the studied species")
+	if(len(sys.argv)<7):
+		sys.exit("\n\033[1;31m ERROR: 6 arguments are required: {0} missing\033[0m\n".format(7-len(sys.argv)))
+	if(len(sys.argv)>7):
+		sys.exit("\n\033[1;31m ERROR: 6 arguments are required: {0} too much\033[0m\n".format(len(sys.argv)-7))
+
+
+genomeFileName = sys.argv[1]
+gffFileName = sys.argv[2]
+vcfFileName = sys.argv[3]
+minCov = int(sys.argv[4])
+corrTableFileName = sys.argv[5]
+species = sys.argv[6]
+
+
+testFile = os.path.isfile(genomeFileName)
+if testFile == False:
+	sys.exit("\n\033[1;31m ERROR: Reference genome file '{0}' is not found\033[0m\n".format(genomeFileName))
+
+
+testFile = os.path.isfile(gffFileName)
+if testFile == False:
+	sys.exit("\n\033[1;31m ERROR: GFF file '{0}' is not found\033[0m\n".format(gffFileName))
+
+
+testFile = os.path.isfile(vcfFileName)
+if testFile == False:
+	sys.exit("\n\033[1;31m ERROR: VCF file '{0}' is not found\033[0m\n".format(vcfFileName))
+
+
+testFile = os.path.isfile(corrTableFileName)
+if testFile == False:
+	sys.exit("\n\033[1;31m ERROR: Correspondance table '{0}' is not found\033[0m\n".format(corrTableFileName))
+
 
 genomeFileName = "/home/roux/Documents/ABCheliconius/Hmel2.fa"
 gffFileName = "/home/roux/Documents/ABCheliconius/Hmel2.gff"
 vcfFileName = "/home/roux/Documents/ABCheliconius/test_ama10.Hmel2.bwa.default.HC.vcf"
 minCov = 3
+corrTableFileName = ""
 species = "mel"
+
 
 # parse fasta
 def fasta2dic(f):
@@ -92,6 +140,20 @@ def test_gene(x, genome):
 #gffFileName = sys.argv[2]
 #vcfFileName = sys.argv[3]
 #minCov = int(sys.argv[4])
+#corrTableFileName = sys.argv[5]
+
+surveyedContig = [] # list of surveyed contigs corresponding to the one present in the subVCF-file.
+infile = open(corrTableFileName, "r")
+for i in infile:
+	i = i.strip().split("\t")
+	if i[1] == vcfFileName:
+		surveyedContig.append(i[0])
+infile.close()
+
+
+if len(surveyedContig) == 0:
+	sys.exit("\n\033[1;31m ERROR: No contigs are present in {0}\033[0m\n".format(vcfFileName))
+
 
 ##############
 bases = ['A', 'T', 'G', 'C']
@@ -112,31 +174,32 @@ for i in input:
 	if i[0:2] != "##":
 		i = i.strip().split("\t")
 		contig = i[0]
-		if contig not in list_of_contigs:
-			list_of_contigs.append(contig)
-			nGenes_per_contigs.append(0)
-			geneID = 0
-		if i[2] == "gene":
-			geneID += 1
-			geneName = "{0}_{1}".format(contig, geneID)
-		if geneName not in gff:
-			nGenes_per_contigs[len(nGenes_per_contigs)-1] += 1
-			gff[geneName] = {}
-			gff[geneName]['min'] = []
-			gff[geneName]['max'] = []
-			gff[geneName]['strand'] = ''
-			gff[geneName]['nExons'] = 0
-#		if i[2] == "exon":
-		if i[2] == "CDS":
-			gff[geneName]['min'].append(int(i[3]) - 1) # convert gff unit (1-based) into python unit (0-based)
-			gff[geneName]['max'].append(int(i[4]) - 1)
-			gff[geneName]['strand'] = i[6]
-			gff[geneName]['nExons'] += 1
-			gff[geneName]['contig'] = contig
+		if contig in surveyedContig:	
+			if contig not in list_of_contigs:
+				list_of_contigs.append(contig)
+				nGenes_per_contigs.append(0)
+				geneID = 0
+			if i[2] == "gene":
+				geneID += 1
+				geneName = "{0}_{1}".format(contig, geneID)
+			if geneName not in gff:
+				nGenes_per_contigs[len(nGenes_per_contigs)-1] += 1
+				gff[geneName] = {}
+				gff[geneName]['min'] = []
+				gff[geneName]['max'] = []
+				gff[geneName]['strand'] = ''
+				gff[geneName]['nExons'] = 0
+			#if i[2] == "exon":
+			if i[2] == "CDS":
+				gff[geneName]['min'].append(int(i[3]) - 1) # convert gff unit (1-based) into python unit (0-based)
+				gff[geneName]['max'].append(int(i[4]) - 1)
+				gff[geneName]['strand'] = i[6]
+				gff[geneName]['nExons'] += 1
+				gff[geneName]['contig'] = contig
 input.close()
 
 
-
+# simply get the header and positions of columns
 input = open(vcfFileName, "r")
 for i in input:
 	i = i.strip()
@@ -152,10 +215,11 @@ for i in input:
 input.close()
 
 
+# get individuals present in the header
 individuals = [] # list of headers
 indiv_col = []
 for i in range(len(header)):
-	if i>8:
+	if i>8: # TO CHANGE IF REQUIRED: indicates columns beyond/after the FORMAT column in VCF file
 		individuals.append(header[i])
 		indiv_col.append(i)
 
