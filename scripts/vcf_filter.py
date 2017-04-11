@@ -49,12 +49,12 @@ if testFile == False:
 	sys.exit("\n\033[1;31m ERROR: Correspondance table '{0}' is not found\033[0m\n".format(corrTableFileName))
 
 
-genomeFileName = "/home/roux/Documents/ABCheliconius/Hmel2.fa"
-gffFileName = "/home/roux/Documents/ABCheliconius/Hmel2.gff"
-vcfFileName = "/home/roux/Documents/ABCheliconius/test_ama10.Hmel2.bwa.default.HC.vcf"
-minCov = 3
-corrTableFileName = ""
-species = "mel"
+#genomeFileName = "/home/roux/Documents/ABCheliconius/Hmel2.fa"
+#gffFileName = "/home/roux/Documents/ABCheliconius/Hmel2.gff"
+#vcfFileName = "/home/roux/Documents/ABCheliconius/test_ama10.Hmel2.bwa.default.HC.vcf"
+#minCov = 3
+#corrTableFileName = ""
+#species = "mel"
 
 
 # parse fasta
