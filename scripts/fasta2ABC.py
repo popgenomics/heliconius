@@ -48,7 +48,7 @@ L = len(alignA[alignA.keys()[0]]) - 3 # remove the last 3 bases to excluse final
 L = trunc2triplets(L) # convert the remaining length into a multiple of 3
 
 
-interspe = {}
+interspe = []
 nA = 0
 nB = 0
 for i in alignA:
@@ -56,7 +56,7 @@ for i in alignA:
 	propN = seq.count("N")/L
 	if propN < threshold_N:
 		nA += 1
-		interspe[i] = seq 
+		interspe.append(seq)
 
 
 for i in alignB:
@@ -64,7 +64,7 @@ for i in alignB:
 	propN = seq.count("N")/L
 	if propN < threshold_N:
 		nB += 1
-		interspe[i] = seq
+		interspe.append(seq)
 
 
 if nA < nMin:
@@ -76,8 +76,63 @@ if nB < nMin:
 	sys.exit("Species B have less than {0} sequences. Species A is ok". format(nMin))
 
 
-for i in interspe:
-	print(">{0}\n{1}".format(i, coloredSeq(interspe[i][0:120])))
+#for i in interspe:
+#	print(">{0}\n{1}".format(i, coloredSeq(interspe[i][0:120])))
 
 
 
+nSites = 0 # total number of synonymous sites within the sequence, computed using codonTable
+positions = [] # list of synonymous polymorphic positions
+msStyle = [] # contains the msStyle format
+for ind in range(nA):
+	msStyle.append([])
+for ind in range(nB):
+	msStyle.append([])
+
+# loop over codons:
+for pos in range(L)[::3]:
+	alignmentOfCodons = [] # set of codons in the alignment, starting at the position 'pos1'
+	# loop over individuals:
+	# get all codons in the alignment
+	for ind in range(nA + nB):
+		pos1 = interspe[ind][pos]
+		pos2 = interspe[ind][pos + 1]
+		pos3 = interspe[ind][pos + 2]
+		base = pos1 + pos2 + pos3 
+		alignmentOfCodons.append(base)
+	polyMcodons = list(set(alignmentOfCodons)) # list of codons found in the alignment
+	nCodons = 0
+	nCodons = len(polyMcodons)
+	testN = False # False if no codon with 'N'; True if a 'N' is found in at least one codon for one individual
+	testStopCodon = False # False if no stop codon was found; True if a stop codon was found
+	for i in polyMcodons: # loop to test for some 'N'
+		if 'N' in i:
+			testN = True
+		if i not in codonTable:
+			testStopCodon = True
+	# if: 1) a maximum of 2 polymorphic codons, and, 2) no codon with 'N', and, 3) all codons effectively code for an amino acid
+	if nCodons <= 2 and testN==False and testStopCodon==False: 
+		nSites_pos = 0.0
+		for i in alignmentOfCodons:
+			nSites_pos += codonTable[i]['nS']
+		nSites += nSites_pos/len(alignmentOfCodons)
+		# if two codons --> there is a polymorphism
+		if nCodons == 2:
+			alignmentOfAminoAcids = []
+			for i in alignmentOfCodons:
+				alignmentOfAminoAcids.append(codonTable[i]['aa'])
+			setOfAminoAcids = list(set(alignmentOfAminoAcids))
+			# if two codons but one amino acids --> synonymous polymorphism
+			if len(setOfAminoAcids) == 1: 
+				positions.append(pos)
+				ancestralAllele = polyMcodons[0] # in absence of outgroup --> the ancestral allele is the first in the alignement
+				derivedAllele = polyMcodons[1] # without outgroup --> the derived allele is the one who is not the first...
+				for i in range(nA + nB):
+					if alignmentOfCodons[i] == ancestralAllele:
+						msStyle[i].append('0')
+					if alignmentOfCodons[i] == derivedAllele:
+						msStyle[i].append('1')
+
+
+print("# of synonymous positions = {0}".format(nSites))
+print("\t".join( [ str(i) for i in positions ] ))
