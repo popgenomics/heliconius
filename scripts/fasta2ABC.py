@@ -1,10 +1,32 @@
 #!/usr/bin/pypy
 import sys
+import os
+
+if len(sys.argv) != 5:
+	print("\n\tfasta2ABC.py produces a msLike output file from two alignments (one per species)")
+	print("\n\033[1;33m\tExample: ./fasta2ABC.py ama_Hmel200001_1.fas chi_Hmel200001_1.fas 0.75 10\033[0m\n")
+	print("\t\targ1 =\tname of the fasta file containing the alignment for species A")
+	print("\t\targ2 =\tname of the fasta file containing the alignment for species B")
+	print("\t\targ3 =\tvalue in [0-1]. Corresponds to a threshold of %N above which a sequence is rejected")
+	print("\t\targ4 =\tinteger, corresponding to the minimum number of retained sequences (after rejection).\n\t\t\tif not enough sequences are retained, the loci is excluded from the analysis")
+	if(len(sys.argv)<5):
+		sys.exit("\n\033[1;31m ERROR: 4 arguments are required: {0} missing\033[0m\n".format(5-len(sys.argv)))
+	if(len(sys.argv)>5):
+		sys.exit("\n\033[1;31m ERROR: 4 arguments are required: {0} too much\033[0m\n".format(len(sys.argv)-5))
 
 seqA = sys.argv[1] # alignment of sequences from species A
 seqB = sys.argv[2] # alignment of sequences from species B
 threshold_N = float(sys.argv[3]) # if an allele has %N > threshold_N --> sequence is rejected
 nMin = int(sys.argv[4]) # minimum number of individuals within a species
+
+
+test = os.path.isfile(seqA)
+if test == False:
+	sys.exit("\n\033[1;31m ERROR: alignement '{0}' of species A is not found\033[0m\n".format(seqA))
+
+test = os.path.isfile(seqB)
+if test == False:
+	sys.exit("\n\033[1;31m ERROR: alignement '{0}' of species B is not found\033[0m\n".format(seqB))
 
 
 def coloredSeq(seq):
