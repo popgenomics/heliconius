@@ -2,6 +2,7 @@
 import sys
 import os
 
+# check the arguments
 if len(sys.argv) != 5:
 	print("\n\tfasta2ABC.py produces a msLike output file from two alignments (one per species)")
 	print("\n\033[1;33m\tExample: ./fasta2ABC.py ama_Hmel200001_1.fas chi_Hmel200001_1.fas 0.75 10\033[0m\n")
