@@ -1,5 +1,23 @@
-#!/usr/bin/python
+#!/usr/bin/pypy
 import sys
+
+def coloredSeq(seq):
+	# print sequences with the standard color code
+	seq = seq.replace("A", '\x1b[5;30;41m' + 'A' + '\x1b[0m')
+	seq = seq.replace("T", '\x1b[5;30;44m' + 'T' + '\x1b[0m')
+	seq = seq.replace("G", '\x1b[6;30;43m' + 'G' + '\x1b[0m')
+	seq = seq.replace("C", '\x1b[5;30;42m' + 'C' + '\x1b[0m')
+	return(seq)
+
+
+def trunc2triplets(size):
+	# trunc a value to its closest and smaller multiple of 3
+	size = int(size)
+	for i in range(2):
+		if size%3 != 0:
+			size -= 1
+	return(size)
+
 
 # nN = number of non-synonymous sites in the codon i: example for CGG -> nN = 2/3 + 3/3 + 0/3
 # nS = number of synonymous sites in the codon i: example for CGG -> n> = 1/3 + 0/3 + 3/3
@@ -26,28 +44,40 @@ alignA = fasta2dic(seqA)
 alignB = fasta2dic(seqB)
 
 
-L = 1.0 * len(alignA[alignA.keys()[0]]) - 3 # remove the last 3 bases
+L = len(alignA[alignA.keys()[0]]) - 3 # remove the last 3 bases to excluse final stop codon
+L = trunc2triplets(L) # convert the remaining length into a multiple of 3
 
 
 interspe = {}
 nA = 0
 nB = 0
 for i in alignA:
-	propN = alignA[i][:-3].count("N")/L
-	if propN < threshold_:
+	seq = alignA[i][0:L]
+	propN = seq.count("N")/L
+	if propN < threshold_N:
 		nA += 1
-		interspe[i] = alignA[i][:-3]
+		interspe[i] = seq 
 
 
 for i in alignB:
-	propN = alignB[i][:-3].count("N")/L
+	seq = alignB[i][0:L]
+	propN = seq.count("N")/L
 	if propN < threshold_N:
 		nB += 1
-		interspe[i] = alignB[i][:-3]
+		interspe[i] = seq
 
 
-if nA < nMin or nB < nMin:
-	exit(0)
+if nA < nMin:
+	if nB >= nMin:
+		sys.exit("Species A has less than {0} sequences. Species B is ok".format(nMin))
+	if nB < nMin:
+		sys.exit("Species A and B have less than {0} sequences".format(nMin))
+if nB < nMin:
+	sys.exit("Species B have less than {0} sequences. Species A is ok". format(nMin))
+
+
+for i in interspe:
+	print(">{0}\n{1}".format(i, coloredSeq(interspe[i][0:120])))
 
 
 
