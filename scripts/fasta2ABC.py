@@ -1,6 +1,12 @@
 #!/usr/bin/pypy
 import sys
 
+seqA = sys.argv[1] # alignment of sequences from species A
+seqB = sys.argv[2] # alignment of sequences from species B
+threshold_N = float(sys.argv[3]) # if an allele has %N > threshold_N --> sequence is rejected
+nMin = int(sys.argv[4]) # minimum number of individuals within a species
+
+
 def coloredSeq(seq):
 	# print sequences with the standard color code
 	seq = seq.replace("A", '\x1b[5;30;41m' + 'A' + '\x1b[0m')
@@ -34,11 +40,6 @@ def fasta2dic(fastaFile):
 	return (res)
 
 
-seqA = sys.argv[1] # alignment of sequences from species A
-seqB = sys.argv[2] # alignment of sequences from species B
-threshold_N = float(sys.argv[3]) # if an allele has %N > threshold_N --> sequence is rejected
-nMin = int(sys.argv[4]) # minimum number of individuals within a species
-
 
 alignA = fasta2dic(seqA)
 alignB = fasta2dic(seqB)
@@ -53,15 +54,14 @@ nA = 0
 nB = 0
 for i in alignA:
 	seq = alignA[i][0:L]
-	propN = seq.count("N")/L
+	propN = seq.count("N")/(1.0 * L)
 	if propN < threshold_N:
 		nA += 1
 		interspe.append(seq)
 
-
 for i in alignB:
 	seq = alignB[i][0:L]
-	propN = seq.count("N")/L
+	propN = seq.count("N")/(1.0 * L)
 	if propN < threshold_N:
 		nB += 1
 		interspe.append(seq)
@@ -82,7 +82,8 @@ if nB < nMin:
 
 
 nSites = 0 # total number of synonymous sites within the sequence, computed using codonTable
-positions = [] # list of synonymous polymorphic positions
+nSynSegSite = 0 # number of synonymous segregating sites among the nSites
+positions = [] # list of synonymous polymorphic positions: doesn't correspond to the SNP position, but to the first codon position
 msStyle = [] # contains the msStyle format
 for ind in range(nA):
 	msStyle.append([])
@@ -90,6 +91,7 @@ for ind in range(nB):
 	msStyle.append([])
 
 # loop over codons:
+
 for pos in range(L)[::3]:
 	alignmentOfCodons = [] # set of codons in the alignment, starting at the position 'pos1'
 	# loop over individuals:
@@ -100,6 +102,7 @@ for pos in range(L)[::3]:
 		pos3 = interspe[ind][pos + 2]
 		base = pos1 + pos2 + pos3 
 		alignmentOfCodons.append(base)
+	
 	polyMcodons = list(set(alignmentOfCodons)) # list of codons found in the alignment
 	nCodons = 0
 	nCodons = len(polyMcodons)
@@ -110,21 +113,25 @@ for pos in range(L)[::3]:
 			testN = True
 		if i not in codonTable:
 			testStopCodon = True
+	
 	# if: 1) a maximum of 2 polymorphic codons, and, 2) no codon with 'N', and, 3) all codons effectively code for an amino acid
 	if nCodons <= 2 and testN==False and testStopCodon==False: 
 		nSites_pos = 0.0
 		for i in alignmentOfCodons:
 			nSites_pos += codonTable[i]['nS']
 		nSites += nSites_pos/len(alignmentOfCodons)
+		
 		# if two codons --> there is a polymorphism
 		if nCodons == 2:
 			alignmentOfAminoAcids = []
 			for i in alignmentOfCodons:
 				alignmentOfAminoAcids.append(codonTable[i]['aa'])
 			setOfAminoAcids = list(set(alignmentOfAminoAcids))
+			
 			# if two codons but one amino acids --> synonymous polymorphism
-			if len(setOfAminoAcids) == 1: 
-				positions.append(pos)
+			if len(setOfAminoAcids) == 1:
+				nSynSegSite += 1
+				positions.append(pos) # positions: list of first codon position of polymorphic synonymous codons
 				ancestralAllele = polyMcodons[0] # in absence of outgroup --> the ancestral allele is the first in the alignement
 				derivedAllele = polyMcodons[1] # without outgroup --> the derived allele is the one who is not the first...
 				for i in range(nA + nB):
@@ -134,5 +141,40 @@ for pos in range(L)[::3]:
 						msStyle[i].append('1')
 
 
-print("# of synonymous positions = {0}".format(nSites))
-print("\t".join( [ str(i) for i in positions ] ))
+
+# print some global informations
+#print("# Length = {0}".format(L))
+#print("# of synonymous positions = {0}".format(nSites))
+#print("\t".join( [ str(i) for i in positions ] ))
+
+# core of the output files names
+geneName = seqA
+if "/" in geneName:
+	geneName.split("/")[-1:]
+geneName = geneName.split(".")[0][4:]
+
+
+geneName = seqA.split(".")[0][4:]
+
+
+# ms_like output files
+locus_ms = "./msnsam tbs 20 -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -n 2 tbs -ej tbs 1 2 -eN tbs tbs\n3579 27011 59243\n\n"
+locus_ms = locus_ms + "//" + "\n"
+locus_ms = locus_ms + "segsites: {0}\n".format(int(nSynSegSite))
+if nSynSegSite != 0:
+	locus_ms += "positions: {0}\n".format( " ".join([ str(round((1.0*i)/L, 4)) for i in positions ]))
+	for i in msStyle:
+		locus_ms = locus_ms + "".join( [ str(j) for j in i ] ) + "\n"
+
+outfile = open(geneName + ".ms", "w")
+outfile.write(locus_ms)
+outfile.close()
+
+# informations about locus
+res = "locusName\tL_including_N\tLsyno\tnSynSegSite\tnsamA\tnsamB\n"
+res += "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n".format(geneName, L, nSites, nSynSegSite, nA, nB)
+
+outfile = open(geneName + "_info.txt", "w")
+outfile.write(res)
+outfile.close()
+ 
