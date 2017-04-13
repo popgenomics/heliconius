@@ -1,4 +1,4 @@
-#!/usr/bin/pypy
+#!/usr/bin/python
 import sys
 import os
 
@@ -173,11 +173,12 @@ for pos in range(L)[::3]:
 # core of the output files names
 geneName = seqA
 if "/" in geneName:
-	geneName.split("/")[-1:]
-geneName = geneName.split(".")[0][4:]
+	geneName = geneName.split("/")[-1:]
+
+geneName = geneName[0].split(".")[0][4:]
 
 
-geneName = seqA.split(".")[0][4:]
+
 
 
 # ms_like output files
@@ -200,4 +201,11 @@ res += "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n".format(geneName, L, nSites, nSynSegSite,
 outfile = open(geneName + "_info.txt", "w")
 outfile.write(res)
 outfile.close()
- 
+
+res = ""
+for i in range(len(interspe)):
+	res += ">{0}\n{1}\n".format(i, interspe[i])
+outfile = open('tmp.fas', "w")
+outfile.write(res)
+outfile.close()
+
