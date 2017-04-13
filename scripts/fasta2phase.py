@@ -17,7 +17,7 @@ fastaFileName = sys.argv[1]
 
 testFile = os.path.isfile(fastaFileName)
 if testFile == False:
-	sys.exit("\n\033[1;31m ERROR: The fasta alignment '{0}' is not found\033[0m\n".format(fastaFileName))
+	sys.exit("\n\033[1;31m ERROR: The fasta alignment '{0}' was not found\033[0m\n".format(fastaFileName))
 
 
 # get the gene's name
