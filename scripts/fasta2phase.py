@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/pypy
 
-from Bio.SeqIO import parse
+#from Bio.SeqIO import parse
 import sys
 import os
 
@@ -20,6 +20,16 @@ if testFile == False:
 	sys.exit("\n\033[1;31m ERROR: The fasta alignment '{0}' was not found\033[0m\n".format(fastaFileName))
 
 
+def fasta2dic(fastaFile):
+	fasta = open(fastaFile).readlines()
+	seqName = [x.split(" ")[0].rstrip().replace('>','') for x in fasta if x[0] == '>']
+	seq = ''.join([x.rstrip() if x[0]!='>' else '@' for x in fasta])[1:].split('@')
+	res = {}
+	for i in range(len(seq)):
+		res[seqName[i]] = seq[i]
+	return (res)
+
+
 # get the gene's name
 geneName = fastaFileName.split("/")[-1:]
 geneName = geneName[0].split(".")[0]
@@ -28,25 +38,45 @@ geneName = geneName[0].split(".")[0]
 # seq = dictionary; seq['individual']['allele1', 'allele2'] = sequence
 seq = {}
 individuals = []
-infile = parse(fastaFileName, "fasta")
 
 
+tmp = fasta2dic(fastaFileName)
 fullNames = []
-for i in infile:
-	fullNames.append(i.id)
-	ind = i.id.split("|")[2]
+
+for i in tmp:
+	fullNames.append(i)
+	ind = i.split("|")[2]
 	if ind not in seq:
 		individuals.append(ind)
 		seq[ind] = {}
-	if "allele1" in i.id:
-		seq[ind]['allele1'] = str(i.seq)
-		seq[ind]['name_allele1'] = i.id
-	if "allele2" in i.id:
-		seq[ind]['allele2'] = str(i.seq)
-		seq[ind]['name_allele2'] = i.id
+	if "allele1" in i:
+		seq[ind]['allele1'] = str(tmp[i])
+		seq[ind]['name_allele1'] = i
+	if "allele2" in i:
+		seq[ind]['allele2'] = str(tmp[i])
+		seq[ind]['name_allele2'] = i
 
 
-L = len(i.seq)
+# using biopython
+#infile = parse(fastaFileName, "fasta")
+
+
+# using biopython
+#for i in infile:
+#	fullNames.append(i.id)
+#	ind = i.id.split("|")[2]
+#	if ind not in seq:
+#		individuals.append(ind)
+#		seq[ind] = {}
+#	if "allele1" in i.id:
+#		seq[ind]['allele1'] = str(i.seq)
+#		seq[ind]['name_allele1'] = i.id
+#	if "allele2" in i.id:
+#		seq[ind]['allele2'] = str(i.seq)
+#		seq[ind]['name_allele2'] = i.id
+
+
+L = len(tmp[tmp.keys()[0]])
 
 
 # seq2 = fictionary; seq2['individual']['allele1', 'allele2'] = "polymorphic alleles"
