@@ -3,17 +3,18 @@ import sys
 import os
 
 # check the arguments
-if len(sys.argv) != 5:
+if len(sys.argv) != 6:
 	print("\n\tfasta2ABC.py produces a msLike output file from two alignments (one per species)")
 	print("\n\033[1;33m\tExample: ./fasta2ABC.py ama_Hmel200001_1.fas chi_Hmel200001_1.fas 0.75 10\033[0m\n")
 	print("\t\targ1 =\tname of the fasta file containing the alignment for species A")
 	print("\t\targ2 =\tname of the fasta file containing the alignment for species B")
 	print("\t\targ3 =\tvalue in [0-1]. Corresponds to a threshold of %N above which a sequence is rejected")
 	print("\t\targ4 =\tinteger, corresponding to the minimum number of retained sequences (after rejection).\n\t\t\tif not enough sequences are retained, the loci is excluded from the analysis")
-	if(len(sys.argv)<5):
-		sys.exit("\n\033[1;31m ERROR: 4 arguments are required: {0} missing\033[0m\n".format(5-len(sys.argv)))
-	if(len(sys.argv)>5):
-		sys.exit("\n\033[1;31m ERROR: 4 arguments are required: {0} too much\033[0m\n".format(len(sys.argv)-5))
+	print("\t\targ5 =\tstring, geneName")
+	if(len(sys.argv)<6):
+		sys.exit("\n\033[1;31m ERROR: 5 arguments are required: {0} missing\033[0m\n".format(6-len(sys.argv)))
+	if(len(sys.argv)>6):
+		sys.exit("\n\033[1;31m ERROR: 5 arguments are required: {0} too much\033[0m\n".format(len(sys.argv)-6))
 
 seqA = sys.argv[1] # alignment of sequences from species A
 seqB = sys.argv[2] # alignment of sequences from species B
@@ -53,41 +54,81 @@ def trunc2triplets(size):
 codonTable = {'AAA': {'aa': 'K', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'AAC': {'aa': 'N', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'AAG': {'aa': 'K', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'AAT': {'aa': 'N', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'ACA': {'aa': 'T', 'nN': 2.0, 'nS': 1.0}, 'ACC': {'aa': 'T', 'nN': 2.0, 'nS': 1.0}, 'ACG': {'aa': 'T', 'nN': 2.0, 'nS': 1.0}, 'ACT': {'aa': 'T', 'nN': 2.0, 'nS': 1.0}, 'AGA': {'aa': 'R', 'nN': 2.3333333333333335, 'nS': 0.6666666666666666}, 'AGC': {'aa': 'S', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'AGG': {'aa': 'R', 'nN': 2.3333333333333335, 'nS': 0.6666666666666666}, 'AGT': {'aa': 'S', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'ATA': {'aa': 'I', 'nN': 2.3333333333333335, 'nS': 0.6666666666666666}, 'ATC': {'aa': 'I', 'nN': 2.3333333333333335, 'nS': 0.6666666666666666}, 'ATG': {'aa': 'M', 'nN': 3.0, 'nS': 0.0}, 'ATT': {'aa': 'I', 'nN': 2.3333333333333335, 'nS': 0.6666666666666666}, 'CAA': {'aa': 'Q', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'CAC': {'aa': 'H', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'CAG': {'aa': 'Q', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'CAT': {'aa': 'H', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'CCA': {'aa': 'P', 'nN': 2.0, 'nS': 1.0}, 'CCC': {'aa': 'P', 'nN': 2.0, 'nS': 1.0}, 'CCG': {'aa': 'P', 'nN': 2.0, 'nS': 1.0}, 'CCT': {'aa': 'P', 'nN': 2.0, 'nS': 1.0}, 'CGA': {'aa': 'R', 'nN': 1.6666666666666667, 'nS': 1.3333333333333333}, 'CGC': {'aa': 'R', 'nN': 2.0, 'nS': 1.0}, 'CGG': {'aa': 'R', 'nN': 1.6666666666666667, 'nS': 1.3333333333333333}, 'CGT': {'aa': 'R', 'nN': 2.0, 'nS': 1.0}, 'CTA': {'aa': 'L', 'nN': 1.6666666666666667, 'nS': 1.3333333333333333}, 'CTC': {'aa': 'L', 'nN': 2.0, 'nS': 1.0}, 'CTG': {'aa': 'L', 'nN': 1.6666666666666667, 'nS': 1.3333333333333333}, 'CTT': {'aa': 'L', 'nN': 2.0, 'nS': 1.0}, 'GAA': {'aa': 'E', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'GAC': {'aa': 'D', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'GAG': {'aa': 'E', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'GAT': {'aa': 'D', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'GCA': {'aa': 'A', 'nN': 2.0, 'nS': 1.0}, 'GCC': {'aa': 'A', 'nN': 2.0, 'nS': 1.0}, 'GCG': {'aa': 'A', 'nN': 2.0, 'nS': 1.0}, 'GCT': {'aa': 'A', 'nN': 2.0, 'nS': 1.0}, 'GGA': {'aa': 'G', 'nN': 2.0, 'nS': 1.0}, 'GGC': {'aa': 'G', 'nN': 2.0, 'nS': 1.0}, 'GGG': {'aa': 'G', 'nN': 2.0, 'nS': 1.0}, 'GGT': {'aa': 'G', 'nN': 2.0, 'nS': 1.0}, 'GTA': {'aa': 'V', 'nN': 2.0, 'nS': 1.0}, 'GTC': {'aa': 'V', 'nN': 2.0, 'nS': 1.0}, 'GTG': {'aa': 'V', 'nN': 2.0, 'nS': 1.0}, 'GTT': {'aa': 'V', 'nN': 2.0, 'nS': 1.0}, 'TAC': {'aa': 'Y', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'TAT': {'aa': 'Y', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'TCA': {'aa': 'S', 'nN': 2.0, 'nS': 1.0}, 'TCC': {'aa': 'S', 'nN': 2.0, 'nS': 1.0}, 'TCG': {'aa': 'S', 'nN': 2.0, 'nS': 1.0}, 'TCT': {'aa': 'S', 'nN': 2.0, 'nS': 1.0}, 'TGC': {'aa': 'C', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'TGG': {'aa': 'W', 'nN': 3.0, 'nS': 0.0}, 'TGT': {'aa': 'C', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'TTA': {'aa': 'L', 'nN': 2.3333333333333335, 'nS': 0.6666666666666666}, 'TTC': {'aa': 'F', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}, 'TTG': {'aa': 'L', 'nN': 2.3333333333333335, 'nS': 0.6666666666666666}, 'TTT': {'aa': 'F', 'nN': 2.6666666666666665, 'nS': 0.3333333333333333}}
 
 
-def fasta2dic(fastaFile):
+#def fasta2dic(fastaFile):
+#	fasta = open(fastaFile).readlines()
+#	seqName = [x.split(" ")[0].rstrip().replace('>','') for x in fasta if x[0] == '>']
+#	seq = ''.join([x.rstrip() if x[0]!='>' else '@' for x in fasta])[1:].split('@')
+#	res = {}
+#	for i in range(len(seq)):
+#		res[seqName[i]] = seq[i]
+#	return (res)
+
+#alignA = fasta2dic(seqA)
+#alignB = fasta2dic(seqB)
+
+
+def fasta2list(fastaFile):
 	fasta = open(fastaFile).readlines()
 	seqName = [x.split(" ")[0].rstrip().replace('>','') for x in fasta if x[0] == '>']
 	seq = ''.join([x.rstrip() if x[0]!='>' else '@' for x in fasta])[1:].split('@')
 	res = {}
-	for i in range(len(seq)):
-		res[seqName[i]] = seq[i]
+	res['seq'] = seq
+	res['id'] = seqName
 	return (res)
 
+alignA = fasta2list(seqA)
+alignB = fasta2list(seqB)
 
+# if fasta2dic
+#L = len(alignA[alignA.keys()[0]]) - 3 # remove the last 3 bases to excluse final stop codon
+#L = trunc2triplets(L) # convert the remaining length into a multiple of 3
 
-alignA = fasta2dic(seqA)
-alignB = fasta2dic(seqB)
-
-
-L = len(alignA[alignA.keys()[0]]) - 3 # remove the last 3 bases to excluse final stop codon
+# if fasta2list
+L = len(alignA['seq'][0]) - 3 # remove the last 3 bases to excluse final stop codon
 L = trunc2triplets(L) # convert the remaining length into a multiple of 3
 
-
 interspe = []
+interspeName = []
 nA = 0
 nB = 0
-for i in alignA:
-	seq = alignA[i][0:L]
+
+# if fasta2dic
+#for i in alignA:
+#	seq = alignA[i][0:L]
+#	propN = seq.count("N")/(1.0 * L)
+#	if propN < threshold_N:
+#		nA += 1
+#		interspe.append(seq)
+#		interspeName.append(i)
+#
+#for i in alignB:
+#	seq = alignB[i][0:L]
+#	propN = seq.count("N")/(1.0 * L)
+#	if propN < threshold_N:
+#		nB += 1
+#		interspe.append(seq)
+#		interspeName.append(i)
+
+
+# if fasta2list
+for i in range(len(alignA['seq'])):
+	seq = alignA['seq'][i][0:L]
+	name = alignA['id'][i][0:L]
 	propN = seq.count("N")/(1.0 * L)
 	if propN < threshold_N:
 		nA += 1
 		interspe.append(seq)
+		interspeName.append(name)
 
-for i in alignB:
-	seq = alignB[i][0:L]
+
+for i in range(len(alignB['seq'])):
+	seq = alignB['seq'][i][0:L]
+	name = alignB['id'][i][0:L]
 	propN = seq.count("N")/(1.0 * L)
 	if propN < threshold_N:
 		nB += 1
 		interspe.append(seq)
+		interspeName.append(name)
 
 
 if nA < nMin:
@@ -171,12 +212,12 @@ for pos in range(L)[::3]:
 #print("\t".join( [ str(i) for i in positions ] ))
 
 # core of the output files names
-geneName = seqA
-if "/" in geneName:
-	geneName = geneName.split("/")[-1:]
-
-geneName = geneName[0].split(".")[0][4:]
-
+#geneName = seqA
+#if "/" in geneName:
+#	geneName = geneName.split("/")[-1:]
+#
+#geneName = geneName[0].split(".")[0][4:]
+geneName = sys.argv[5]
 
 
 
@@ -204,8 +245,8 @@ outfile.close()
 
 res = ""
 for i in range(len(interspe)):
-	res += ">{0}\n{1}\n".format(i, interspe[i])
-outfile = open('tmp.fas', "w")
+	res += ">{0}\n{1}\n".format(interspeName[i], interspe[i])
+outfile = open('{0}.fas'.format(geneName), "w")
 outfile.write(res)
 outfile.close()
 
