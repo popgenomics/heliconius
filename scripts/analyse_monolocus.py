@@ -18,8 +18,8 @@ if len(sys.argv) != 2:
 pair = sys.argv[1]
 
 
-mypath = '/home/croux/Documents/ABCheliconius/pairs/' + pair
-
+#mypath = '/home/croux/Documents/ABCheliconius/pairs/' + pair
+mypath = '/home/croux/Documents/heliconius/inputABC/' + pair
 
 test = os.path.isdir(mypath)
 

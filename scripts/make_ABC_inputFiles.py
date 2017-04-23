@@ -10,7 +10,7 @@ from numpy import ceil
 
 if len(sys.argv) != 6:
 	print("\n\tproduces bpfile, spinput.txt and locus.ms")
-	print("\033[1;33m\tExample: ./make_ABC_inputFiles.py ama_txn 100 900 100000 0.00000002\033[0m")
+	print("\033[1;33m\tExample: ./make_ABC_inputFiles.py ama_txn 100 900 100000 0.000000003\033[0m")
 	sys.exit("\n\033[1;31m\tNeeds 5 arguments\033[0m\n")
 
 
@@ -26,8 +26,7 @@ mu = float(sys.argv[5])
 #Nindiv = 100000
 #mu = 0.00000002
 
-mypath = '/home/croux/Documents/ABCheliconius/pairs/' + pair
-
+mypath = '/home/croux/Documents/heliconius/inputABC/' + pair
 
 files = [ f for f in listdir(mypath) if isfile(join(mypath, f)) and '.fas' in f ]
 
