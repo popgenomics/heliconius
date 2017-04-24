@@ -1,0 +1,43 @@
+#!/usr/bin/python
+import sys
+project = sys.argv[1]
+nloci = int(sys.argv[2]) # =900
+nrep = int(sys.argv[3]) # =15000
+nsim = nloci*nrep
+mypath = "/home/croux/Documents/heliconius/inputABC/" + project + "/simulations"
+# for SI
+name = "SI_Nhomo"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=SI nreps={2} Nvariation=homo Mvariation=hetero symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "SI_Nhetero"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=SI nreps={2} Nvariation=hetero Mvariation=hetero symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+
+# for IM 
+name = "IM_Mhomo_Nhomo"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=IM nreps={2} Nvariation=homo Mvariation=homo symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "IM_Mhetero_Nhomo"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=IM nreps={2} Nvariation=homo Mvariation=hetero symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "IM_Mhomo_Nhetero"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=IM nreps={2} Nvariation=hetero Mvariation=homo symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "IM_Mhetero_Nhetero"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=IM nreps={2} Nvariation=hetero Mvariation=hetero symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+
+# for AM 
+name = "AM_Mhomo_Nhomo"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=AM nreps={2} Nvariation=homo Mvariation=homo symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ema tbs 2 0 tbs tbs 0 -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "AM_Mhetero_Nhomo"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=AM nreps={2} Nvariation=homo Mvariation=hetero symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ema tbs 2 0 tbs tbs 0 -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "AM_Mhomo_Nhetero"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=AM nreps={2} Nvariation=hetero Mvariation=homo symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ema tbs 2 0 tbs tbs 0 -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "AM_Mhetero_Nhetero"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=AM nreps={2} Nvariation=hetero Mvariation=hetero symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ema tbs 2 0 tbs tbs 0 -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+
+# for SC 
+name = "SC_Mhomo_Nhomo"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=SC nreps={2} Nvariation=homo Mvariation=homo symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -eM tbs 0 -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "SC_Mhetero_Nhomo"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=SC nreps={2} Nvariation=homo Mvariation=hetero symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -eM tbs 0 -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "SC_Mhomo_Nhetero"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=SC nreps={2} Nvariation=hetero Mvariation=homo symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -eM tbs 0 -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+name = "SC_Mhetero_Nhetero"
+print("mkdir {0}/{1}; cd {0}/{1}; cp ../bpfile {0}/{1}; cp ../spinput.txt {0}/{1}; mknod myfifo p; mscalc < myfifo & priorgen_heliconius.py bpfile=bpfile n1=0 n1=60 n1past=0 n1past=2 n2=0 n2=60 n2past=0 n2past=2 nA=0 nA=50 tau=0 tau=12 M1=0 M1=100 M2=0 M2=100 shape1=0 shape1=20 shape2=0 shape2=200 model=SC nreps={2} Nvariation=hetero Mvariation=hetero symMig=sym parameters=priorfile | msnsam tbs {3} -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -eM tbs 0 -ej tbs 2 1 -eN tbs tbs >myfifo".format(mypath, name, nrep, nsim))
+
