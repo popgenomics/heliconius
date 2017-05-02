@@ -5,32 +5,82 @@
 #include <vector>
 #include <fstream>
 
+void treatVCFfile(std::string const vcfFileSPA, const unsigned int minCov, std::vector<std::string> & alleleAlt_spA, std::vector<unsigned int> & nAlleleRef_spA, std::vector<unsigned int> & nAlleleAlt_spA, std::vector<std::string> & contig, std::vector<std::string> & position, std::vector<std::string> & alleleRef, std::vector<std::string> & format);
+
 int main(int argc, char* argv[]){
+	if(argc != 5){
+		std::cerr << std::endl;
+		std::cerr << "\033[1;31m ERROR: 4 arguments are needed\033[0m\n";
+		std::cerr << "\t arg1 = name of the VCF file for species A" << std::endl;
+		std::cerr << "\t arg2 = name of the VCF file for species B" << std::endl;
+		std::cerr << "\t arg3 = minimum number of reads to call an allelic state" << std::endl;
+		std::cerr << "\t arg4 = label to recognize the output file's name" << std::endl << std::endl;
+		std::cerr << "\033[1;33m example: ./vcf2dadi subVCF_ama_105.vcf subVCF_chi_105.vcf 10 ama_chi_105\033[0m\n" << std::endl << std::endl;
+		exit(0);
+	}
+
 	const std::string vcfFileSPA(argv[1]); // vcf's name for species A
+	const std::string vcfFileSPB(argv[2]); // vcf's name for species B
+	const unsigned int minCov(atoi(argv[3])); // minimum number of reads to call an allelic state
+	const std::string outputLabel(argv[4]); // label put in output file name for being recognized
 
-	const unsigned int minCov(10);
+	size_t i(0);
 
+	// species A
+	std::vector<std::string> contig_spA; // vector of contig names
+	std::vector<std::string> position_spA; // vector of positions in a contig
+	std::vector<std::string> alleleRef_spA; // vector of alleles of the reference genome. INDELS + MULTIALLELISM ARE CURRENTLY MASKED
+	std::vector<std::string> alleleAlt_spA; // vector of alternative alleles. INDELS + MULTIALLELISM ARE CURRENTLY MASKED
+	std::vector<std::string> format_spA; // vector of VCF code describing the format of read depths
+	std::vector<unsigned int> nAlleleRef_spA; // vector of number of copies of the reference allele
+	std::vector<unsigned int> nAlleleAlt_spA; // vector of number of copies of the alternative allele
+	
+	// read vcf file for species A
+	treatVCFfile(vcfFileSPA, minCov, alleleAlt_spA, nAlleleRef_spA, nAlleleAlt_spA, contig_spA, position_spA, alleleRef_spA, format_spA);
+
+	// species B 
+	std::vector<std::string> contig_spB;
+	std::vector<std::string> position_spB;
+	std::vector<std::string> alleleRef_spB;
+	std::vector<std::string> format_spB;
+	std::vector<std::string> alleleAlt_spB;
+	std::vector<unsigned int> nAlleleRef_spB;
+	std::vector<unsigned int> nAlleleAlt_spB;
+
+	// read vcf file for species B
+	treatVCFfile(vcfFileSPB, minCov, alleleAlt_spB, nAlleleRef_spB, nAlleleAlt_spB, contig_spB, position_spB, alleleRef_spB, format_spB);
+
+
+	// write the results
+		std::ofstream outputFlux("output.txt", std::ios::out);
+		if(outputFlux){
+			outputFlux << "contig\tposition\tallele_Ref\tallele_Alt_spA\tnAllRef_spA\tnAllAlt_spA\tallele_Alt_spB\tnAllRef_spB\tnAllAlt_spB\n";
+			for(i=0; i<contig_spA.size(); ++i){
+				if(alleleRef_spA[i]!="N" && alleleRef_spA[i]!="." && alleleAlt_spA[i]!="." && alleleRef_spB[i]!="N" && alleleRef_spB[i]!="." && alleleAlt_spB[i]!="."){
+					if( alleleAlt_spA[i]==alleleAlt_spB[i] ){
+						if(nAlleleRef_spA[i]!=0 && nAlleleRef_spB[i]!=0 && nAlleleAlt_spA[i]!=0 && nAlleleAlt_spB[i]!=0){
+							outputFlux << contig_spA[i] << "\t" << position_spA[i] << "\t" << alleleRef_spA[i] << "\t";
+							outputFlux << alleleAlt_spA[i] << "\t" << nAlleleRef_spA[i] << "\t" << nAlleleAlt_spA[i] << "\t";
+							outputFlux << alleleAlt_spB[i] << "\t" << nAlleleRef_spB[i] << "\t" << nAlleleAlt_spB[i] << std::endl;
+						}
+					}
+				}
+			}
+		}else{
+			std::cerr <<  "ERROR: cannot oppen output.xt" << std::endl;
+			exit(0);
+		}
+
+	return(0);
+}
+
+void treatVCFfile(std::string const vcfFileSPA, const unsigned int minCov, std::vector<std::string> & alleleAlt_spA, std::vector<unsigned int> & nAlleleRef_spA, std::vector<unsigned int> & nAlleleAlt_spA, std::vector<std::string> & contig, std::vector<std::string> & position, std::vector<std::string> & alleleRef, std::vector<std::string> & format){
 	std::string contigTMP;
 	std::string alleleRefTMP;
 	std::string alleleAltTMP;
 	std::string formatTMP; // contains format of individual informations in vcf
 	std::string positionTMP;
 	
-	std::vector<std::string> contig;
-	std::vector<std::string> position;
-	std::vector<std::string> alleleRef;
-	std::vector<std::string> format;
-
-	// species A
-	std::vector<std::string> alleleAlt_spA;
-	std::vector<unsigned int> nAlleleRef_spA;
-	std::vector<unsigned int> nAlleleAlt_spA;
-	
-	// species B 
-	std::vector<std::string> alleleAlt_spB;
-	std::vector<unsigned int> nAlleleRef_spB;
-	std::vector<unsigned int> nAlleleAlt_spB;
-
 	std::string line;
 	std::string word; // used to parse a line
 	std::string word2; // used to parse a complex word 
@@ -54,11 +104,10 @@ int main(int argc, char* argv[]){
 
 	size_t found(0); // used to test the presence of some expression in a string using std::string::find
 
-	// read vcf file for species A
 	std::ifstream vcfA(vcfFileSPA.c_str(), std::ios::in);
 	if(vcfA){
 		while(getline(vcfA, line)){
-			if(line[0]!='#' & line[1]!='#'){ // start of loop over positions
+			if(line[0]!='#'){ // start of loop over positions
 				i = -1;
 				std::istringstream iss(line);
 				while(std::getline(iss, word, '\t') ){ // start of loop along a vcf line
@@ -90,7 +139,6 @@ int main(int argc, char* argv[]){
 						found = formatTMP.find("AD");
 						if(found != std::string::npos){
 							test_AD = 1; // there is an alternative allele
-//							std::cout << "Pos: " << positionTMP << "\t2 alternative alleles: " << alleleRefTMP << " and " << alleleAltTMP << std::endl;
 						}else{
 							test_AD = 0; // it's only a matter of reference allele
 						}
@@ -176,10 +224,8 @@ int main(int argc, char* argv[]){
 					alleleAltTMP=".";
 					nRefAll_spA_TMP=0;
 					nAltAll_spA_TMP=0;
-				}
-
+					}
 				} // end of loop along a vcf line
-//			std::cout << positionTMP << std::endl;
 			contig.push_back(contigTMP);
 			position.push_back(positionTMP);
 			alleleRef.push_back(alleleRefTMP);
@@ -199,7 +245,7 @@ int main(int argc, char* argv[]){
 		std::cout << nAlleleRef_spA.size() << " counts of ref alleles" << std::endl;
 		std::cout << nAlleleAlt_spA.size() << " counts of alt alleles" << std::endl;*/
 
-		std::ofstream outputFlux("output.txt", std::ios::out);
+/*		std::ofstream outputFlux("output.txt", std::ios::out);
 		if(outputFlux){
 			outputFlux << "contig\tposition\tformat\tallele_Ref\tallele_Alt_spA\tnAllRef_spA\tnAllAlt_spA\n";
 			for(i=0; i<contig.size(); ++i){
@@ -209,10 +255,9 @@ int main(int argc, char* argv[]){
 			std::cerr <<  "ERROR: cannot oppen output.xt" << std::endl;
 			exit(0);
 		}
-
+*/
 	}else{
 		std::cerr << "ERROR: file " << vcfFileSPA << " is not found" << std::endl;
 	}
-	return(0);
 }
 
