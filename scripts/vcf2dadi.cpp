@@ -5,24 +5,32 @@
 #include <vector>
 #include <fstream>
 
+
+// g++ -std=c++17 vcf2dadi.cpp -O3 -o vcf2dadi
+
+
 void treatVCFfile(std::string const vcfFileSPA, const unsigned int minCov, std::vector<std::string> & alleleAlt_spA, std::vector<unsigned int> & nAlleleRef_spA, std::vector<unsigned int> & nAlleleAlt_spA, std::vector<std::string> & contig, std::vector<std::string> & position, std::vector<std::string> & alleleRef, std::vector<std::string> & format);
 
 int main(int argc, char* argv[]){
-	if(argc != 5){
+	if(argc != 7){
 		std::cerr << std::endl;
 		std::cerr << "\033[1;31m ERROR: 4 arguments are needed\033[0m\n";
 		std::cerr << "\t arg1 = name of the VCF file for species A" << std::endl;
 		std::cerr << "\t arg2 = name of the VCF file for species B" << std::endl;
 		std::cerr << "\t arg3 = minimum number of reads to call an allelic state" << std::endl;
-		std::cerr << "\t arg4 = label to recognize the output file's name" << std::endl << std::endl;
-		std::cerr << "\033[1;33m example: ./vcf2dadi subVCF_ama_105.vcf subVCF_chi_105.vcf 10 ama_chi_105\033[0m\n" << std::endl << std::endl;
+		std::cerr << "\t arg4 = name of species A (ex: ama)" << std::endl << std::endl;
+		std::cerr << "\t arg5 = name of species B (ex: chi)" << std::endl << std::endl;
+		std::cerr << "\t arg6 = label to specify the output files" << std::endl << std::endl;
+		std::cerr << "\033[1;33m example: ./vcf2dadi subVCF_ama_105.vcf subVCF_chi_105.vcf 10 ama chi 105\033[0m\n" << std::endl << std::endl;
 		exit(0);
 	}
 
 	const std::string vcfFileSPA(argv[1]); // vcf's name for species A
 	const std::string vcfFileSPB(argv[2]); // vcf's name for species B
 	const unsigned int minCov(atoi(argv[3])); // minimum number of reads to call an allelic state
-	const std::string outputLabel(argv[4]); // label put in output file name for being recognized
+	const std::string speciesA(argv[4]); // name of species A
+	const std::string speciesB(argv[5]); // name of species B
+	const std::string labelOutput(argv[6]); // label put in output file name for being recognized
 
 	size_t i(0);
 
@@ -52,16 +60,21 @@ int main(int argc, char* argv[]){
 
 
 	// write the results
-		std::ofstream outputFlux("output.txt", std::ios::out);
+		std::ofstream outputFlux("output_" + speciesA + "_" + speciesB + "_" + labelOutput + ".txt", std::ios::out);
 		if(outputFlux){
-			outputFlux << "contig\tposition\tallele_Ref\tallele_Alt_spA\tnAllRef_spA\tnAllAlt_spA\tallele_Alt_spB\tnAllRef_spB\tnAllAlt_spB\n";
+			outputFlux << "Ing\tOut\tAllele1\t" << speciesA << "\t" << speciesB << "\tAllele2\t" << speciesA << "\t" << speciesB << "\tGene\tPosition\n";
+//			outputFlux << "contig\tposition\tallele_Ref\tallele_Alt_spA\tnAllRef_spA\tnAllAlt_spA\tallele_Alt_spB\tnAllRef_spB\tnAllAlt_spB\n";
 			for(i=0; i<contig_spA.size(); ++i){
 				if(alleleRef_spA[i]!="N" && alleleRef_spA[i]!="." && alleleAlt_spA[i]!="." && alleleRef_spB[i]!="N" && alleleRef_spB[i]!="." && alleleAlt_spB[i]!="."){
-					if( alleleAlt_spA[i]==alleleAlt_spB[i] ){
-						if(nAlleleRef_spA[i]!=0 && nAlleleRef_spB[i]!=0 && nAlleleAlt_spA[i]!=0 && nAlleleAlt_spB[i]!=0){
-							outputFlux << contig_spA[i] << "\t" << position_spA[i] << "\t" << alleleRef_spA[i] << "\t";
-							outputFlux << alleleAlt_spA[i] << "\t" << nAlleleRef_spA[i] << "\t" << nAlleleAlt_spA[i] << "\t";
-							outputFlux << alleleAlt_spB[i] << "\t" << nAlleleRef_spB[i] << "\t" << nAlleleAlt_spB[i] << std::endl;
+					if( nAlleleAlt_spA[i]!=0 || nAlleleAlt_spB[i]!=0 ){
+						if(  nAlleleRef_spA[i]+nAlleleAlt_spA[i]>0 && nAlleleRef_spB[i]+nAlleleAlt_spB[i]>0 ){
+							if( alleleAlt_spA[i]==alleleAlt_spB[i] ){
+								outputFlux << "-" << alleleRef_spA[i] << "-\t---\t" << alleleRef_spA[i] << "\t";
+								outputFlux << nAlleleRef_spA[i] << "\t" << nAlleleRef_spB[i] << "\t";
+								outputFlux << alleleAlt_spA[i] << "\t";
+								outputFlux << nAlleleAlt_spA[i] << "\t" << nAlleleAlt_spB[i] << "\t";
+								outputFlux << contig_spA[i] << "\t" << position_spA[i] << "\n";
+							}
 						}
 					}
 				}
