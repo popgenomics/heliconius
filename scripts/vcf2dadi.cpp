@@ -22,6 +22,7 @@ int main(int argc, char* argv[]){
 		std::cerr << "\t arg5 = name of species A (ex: ama)" << std::endl;
 		std::cerr << "\t arg6 = name of species B (ex: chi)" << std::endl;
 		std::cerr << "\t arg7 = label to specify the output files" << std::endl << std::endl;
+		std::cerr << "\t camille.roux.1983@gmail.com; 2017" << std::endl << std::endl;
 		std::cerr << "\033[1;33m example: ./vcf2dadi subVCF_ama_105.vcf subVCF_chi_105.vcf 10 6 ama chi 105\033[0m\n" << std::endl << std::endl;
 		exit(0);
 	}
