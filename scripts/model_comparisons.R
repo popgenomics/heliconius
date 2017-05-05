@@ -4,7 +4,8 @@
 # SI_Nhetero; SI_Nhomo
 
 library(abcrf)
-pair = "chi_ros"
+#pair = "chi_ros"
+pair = "ros_txn"
 mypath = paste("/home/croux/Documents/heliconius/inputABC/", pair, "/simulations/", sep="")
 ss = -1
 
@@ -65,6 +66,8 @@ data1 = data.frame(modIndex, sumsta)
 
 mod_SIAMIMSC = abcrf(modIndex~., data1, ntree = 2000, paral = T)
 predict_SIAMIMSC = predict(mod_SIAMIMSC, rbind(observation, observation, observation), data1, ntree = 2000, paral = T)
+predict_SIAMIMSC
+
 # best model
 #  selected model votes model1 votes model2 votes model3 votes model4 post.proba
 #1           SCHH        0.021        0.411       0.4475       0.1205  0.8083417
