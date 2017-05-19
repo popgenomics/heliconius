@@ -38,8 +38,8 @@ msnsam tbs 20000 -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs
 msnsam tbs 20000 -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs\t#for 'IM'\n\t\
 msnsam tbs 20000 -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ema tbs 2 0 tbs tbs 0 -ej tbs 2 1 -eN tbs tbs\t#for 'AM'\n\t\
 msnsam tbs 20000 -t tbs -r tbs tbs -I 2 tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -eM tbs 0 -ej tbs 2 1 -eN tbs tbs\t#for 'SC'\n\t\
-msnsam tbs 20000 -t tbs -r tbs tbs -I 2 tbs tbs 0 -ema 0 2 0 tbs tbs 0 -ema tbs 2 0 tbs tbs 0 -ema tbs 2 0 tbs tbs 0 -ema tbs 2 0 tbs tbs 0 -n1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs\t#for 'PAM or PSC'\n\n\t\
-camille.roux.1@unil.ch\n\t\
+msnsam tbs 20000 -t tbs -r tbs tbs -I 2 tbs tbs 0 -ema 0 2 0 tbs tbs 0 -ema tbs 2 0 tbs tbs 0 -ema tbs 2 0 tbs tbs 0 -ema tbs 2 0 tbs tbs 0 -n 1 tbs -en tbs 1 tbs -n 2 tbs -en tbs 2 tbs -ej tbs 2 1 -eN tbs tbs\t#for 'PAM or PSC'\n\n\t\
+camille.roux.1983@gmail.com\n\t\
 19/05/2017\n"
 for i in sys.argv:
 	if("help" in i):
