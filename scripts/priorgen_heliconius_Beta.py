@@ -91,7 +91,8 @@ for i in sys.argv:
 def binomBeta(nlocus, shape1, shape2, scalar):
 	neutre=[0]
 	hetero=[1]
-	nNeutre=int(uniform(0, nlocus))
+#	nNeutre=int(uniform(0, nlocus))
+	nNeutre=0
 	nHetero=nlocus-nNeutre
 	status=nNeutre*neutre+nHetero*hetero
 	shuffle(status)
