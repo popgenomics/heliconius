@@ -5,20 +5,20 @@ _volcanus_ (melp: colombia) + _zelinde_ (cydno)
 _mallete_ (melp: colombia) + _florensia_ (timareta)  
 _amaryllis_ (melp: peru) + _thelxinoe_ (timareta)  
   
-_ama_ : Heliconius melpomene amaryllis (East)  
-_chi_ : Heliconius cydno chioneus (Panama)  
-_flo_ : Heliconius timareta florencia (Colombia)  
-_mal_ : Heliconius melpomene malleti (Colombia)  
-_ros_ : Heliconius melpomene rosina (Panama)  
-_txn_ : Heliconius timareta thelxinoe (NA)  
-_vul_ : Heliconius melpomene vulcanus (Colombia)  
-_zel_ : Heliconius cydno zelinde (Colombia)  
+_ama_ : *Heliconius melpomene amaryllis* (East)  
+_chi_ : *Heliconius cydno chioneus* (Panama)  
+_flo_ : *Heliconius timareta florencia* (Colombia)  
+_mal_ : *Heliconius melpomene malleti* (Colombia)  
+_ros_ : *Heliconius melpomene rosina* (Panama)  
+_txn_ : *Heliconius timareta thelxinoe* (NA)  
+_vul_ : *Heliconius melpomene vulcanus* (Colombia)  
+_zel_ : *Heliconius cydno zelinde* (Colombia)  
   
 ## sympatric:  
-H. cydno chioneus and H. melpomene rosina  
-H. cydno zelinde and H. melpomene vulcanus  
-H. timareta florencia and H. melpomene malleti  
-H. timareta timareta and H. melpomene plesseni  
+*H. cydno chioneus* and *H. melpomene rosina*  
+*H. cydno zelinde* and *H. melpomene vulcanus*  
+*H. timareta florencia* and *H. melpomene malleti*  
+*H. timareta timareta* and *H. melpomene plesseni*  
   
 ## intra-species:  
 ### H. timareta/cydno:  
