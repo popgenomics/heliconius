@@ -16,19 +16,19 @@ _zel_ : *Heliconius cydno zelinde* (Colombia)
 *H. timareta timareta* and *H. melpomene plesseni*  
   
 ## intra-specific pairs:  
-### *H. timareta/cydno:* 
-	*H. timareta*:  
+### H. timareta/cydno: 
+	H. timareta:  
 		H. t. florencia and H. t. timareta: geographically close  
-	*H. cydno*:  
+	H. cydno:  
 		H. c. galanthus and H. c. chioneus: distant  
 		H. c. galanthus and H. c. zelinde: distant  
 		H. c. chioneus and H. c. zelinde: intermediatly distant  
 ### H. melpomene:  
-	*clade_1*:  
+	clade_1:  
 		H. m. rosina (Panama) and H. m. melpomene: close  
 		H. m. rosina (Panama) and H. m. vulcanus (Colombia): intermediatly distant  
 		H. m. melpomene (Panama) and H. m. vulcanus: intermediatly distant  
-	*clade_2*:  
+	clade_2:  
 		H. m. plesseni (Colombia) and H. m. malleti (Colombia): close  
 		H. m. plesseni (Colombia) and H. m. melpomene (French Guyana): distant  
 		H. m. malleti (Colombia) and H. m. melpomene (French Guyana): distant  
