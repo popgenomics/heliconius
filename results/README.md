@@ -17,8 +17,8 @@
 **thetaB_avg** = Watterson's estimator of \theta for species B  
 **DtajA_avg** = Tajima's _D_ for species A  
 **DtajB_avg** = Tajima's _D_ for species B  
-**divAB_avg** = raw divergence between A and B (d_{xy})  
-**netdivAB_avg** = net divergence between A and B (d_{a})  
+**divAB_avg** = raw divergence between A and B (_d<sub>xy</sub>_)  
+**netdivAB_avg** = net divergence between A and B (_d<sub>a</sub>_)  
 **minDivAB_avg** = minimum divergence between A and B among all pairs of individuals  
 **maxDivAB_avg** = maximum divergence between A and B among all pairs of individuals  
 **Gmin_avg** = minDivAB / divAB  
