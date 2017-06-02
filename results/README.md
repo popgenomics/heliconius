@@ -23,7 +23,7 @@
 **maxDivAB_avg** = maximum divergence between A and B among all pairs of individuals  
 **Gmin_avg** = minDivAB / divAB  
 **Gmax_avg** = maxDivAB / divAB  
-**FST_avg** = Fst computed by 1 - (\piA + \piB)/(2 * \piTot)  
+**FST_avg** = Fst computed by 1 - (**\pi A** + **\pi B**)/(2 * **\pi Tot**)  
 **nSamA** = number of gene copies for species A  
 **nSamB** = number of gene copies for species B  
 **Lsyno** = synonymous length  
