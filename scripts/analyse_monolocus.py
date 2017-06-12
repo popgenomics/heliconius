@@ -19,7 +19,8 @@ pair = sys.argv[1]
 
 
 #mypath = '/home/croux/Documents/ABCheliconius/pairs/' + pair
-mypath = '/home/croux/Documents/heliconius/inputABC/' + pair
+#mypath = '/home/croux/Documents/heliconius/inputABC/' + pair
+mypath = '/home/croux/Documents/data_heliconius/inputABC/' + pair
 
 test = os.path.isdir(mypath)
 
