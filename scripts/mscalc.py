@@ -142,8 +142,12 @@ def compDiv(spA, spB, segsites):
 	res['divAB'] = cr_mean(div)
 	res['minDivAB'] = min(div)
 	res['maxDivAB'] = max(div)
-	res['Gmin'] = res['minDivAB']/res['divAB']
-	res['Gmax'] = res['maxDivAB']/res['divAB']
+	if res['divAB'] > 0:
+		res['Gmin'] = res['minDivAB']/res['divAB']
+		res['Gmax'] = res['maxDivAB']/res['divAB']
+	else:
+		res['Gmin'] = 0.0
+		res['Gmax'] = 0.0
 	return(res)	
 
 
