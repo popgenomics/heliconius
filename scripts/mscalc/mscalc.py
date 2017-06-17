@@ -45,19 +45,42 @@ def compFreq(sequences, segsites):
 	# returns derived allele frequency for a number of 'segsites' positions
 	nDerAll = []
 	nInd = len(sequences)
+	nPair = nInd*(nInd-1)/2.0
 	for i in range(segsites):
 		nDerAll.append(0)
 		for j in sequences:
 			if j[i] == "1":
 				nDerAll[i] += 1.0
-	pi = [ i * (nInd-i) for i in nDerAll ]
+	pi = [ i * (nInd-i) / nPair for i in nDerAll ]
 	freq = [ i/(1.0 * nInd) for i in nDerAll ]
 	res = {}
-	res['pi'] = sum(pi)/(nInd*(nInd-1)/2.0)
+	res['nDer'] = nDerAll
+	res['pi_SNPs'] = pi
+	res['pi'] = sum(pi)
 	res['freq'] = freq
 #			if i == 0:		# uncomment to print sequence j #1
 #				print(j)	# uncomment to print sequence j #2
 	return(res)
+
+def piTot(nDerA, nDerB, nSamA, nSamB, segsites):
+	# returns pi tot for the pooled populations from two vectors of allele count per locus
+	piT = []
+	nTot = nSamA + nSamB
+	for i in range(segsites):
+		tmp = nDerA[i] + nDerB[i]
+		tmp = (nTot - tmp) * tmp / (nTot*(nTot-1)/2.0) # "n ancesral" x "n derived" / C(2,k)
+		piT.append(tmp)
+	return(piT)
+
+
+def Fst(piA, piB, piT, segsites):
+	# returns Fst
+	if piT==0:
+		res = 0.0
+	else:
+		res = 1.0 - (piA+piB)/(2.0*piT)
+	return(res)
+
 
 def sites(freqA, freqB, segsites):
 	sxA, sxB, ss, sf = 0, 0, 0, 0
@@ -119,9 +142,33 @@ def compDiv(spA, spB, segsites):
 	res['divAB'] = cr_mean(div)
 	res['minDivAB'] = min(div)
 	res['maxDivAB'] = max(div)
-	res['Gmin'] = res['minDivAB']/res['divAB']
-	res['Gmax'] = res['maxDivAB']/res['divAB']
+	if res['divAB'] > 0:
+		res['Gmin'] = res['minDivAB']/res['divAB']
+		res['Gmax'] = res['maxDivAB']/res['divAB']
+	else:
+		res['Gmin'] = 0.0
+		res['Gmax'] = 0.0
 	return(res)	
+
+
+def nSs_nSf(ss, sf):
+	# returns the number of loci with ss and sf, with ss but no sf, etc ...
+	nLoci = len(ss)
+	ss_sf, noSs_sf, ss_noSf, noSs_noSf = 0, 0, 0, 0
+	for i in range(nLoci):
+		if ss[i] == 0:
+			if sf[i] == 0:
+				noSs_noSf += 1
+			if sf[i] > 0:
+				noSs_sf += 1
+		else:
+			if sf[i] == 0:
+				ss_noSf += 1
+			if sf[i] > 0:
+				ss_sf += 1
+	res = {'ss_sf': ss_sf, 'ss_noSf': ss_noSf, 'noSs_sf': noSs_sf, 'noSs_noSf': noSs_noSf}
+	return(res)
+
 
 # spinput.txt
 if os.path.isfile("spinput.txt") == False:
@@ -170,7 +217,12 @@ res += "netdivAB_avg\tnetdivAB_std\t"
 res += "minDivAB_avg\tminDivAB_std\t"
 res += "maxDivAB_avg\tmaxDivAB_std\t"
 res += "Gmin_avg\tGmin_std\t"
-res += "Gmax_avg\tGmax_std\n"
+res += "Gmax_avg\tGmax_std\t"
+res += "FST_avg\tFST_std\t"
+res += "ss_sf\t" # number of loci with both ss and sf
+res += "ss_noSf\t" # number of loci with ss but no sf
+res += "noSs_sf\t" # number of loci without ss but with sf
+res += "noSs_noSf\n" # number of loci with no Ss or Sf
 
 infile = open(msfile, "r")
 
@@ -181,6 +233,7 @@ for line in infile:
 	line = line.strip()
 	if "segsites" in line:
 		if nLoci_cnt == 0:
+			ss_sf, noSs_sf, ss_noSf, noSs_noSf = 0, 0, 0, 0
 			bialsites = []
 			sf = []
 			sxA = []
@@ -248,6 +301,17 @@ for line in infile:
 					sxA.append(tmp['sxA'])
 					sxB.append(tmp['sxB'])
 					ss.append(tmp['ss'])
+					# test if loci has both ss, sf, or only one of two, etc ...
+					if tmp['sf'] > 0:
+						if tmp['ss'] > 0:
+							ss_sf += 1
+						if tmp['ss'] == 0:
+							noSs_sf += 1
+					if tmp['sf'] == 0:
+						if tmp['ss'] > 0:
+							ss_noSf += 1
+						if tmp['ss'] == 0:
+							noSs_noSf += 1
 					
 					# theta = sx + ss
 					thetaA_locus = (tmp['sxA']+tmp['ss'])/a1_spA[nLoci_cnt - 1]
@@ -268,11 +332,19 @@ for line in infile:
 					Gmin.append(div['Gmin'])
 					Gmax.append(div['Gmax'])
 					
+					# Fst
+					# vector of piT over segsites
+					piT = piTot(tmpA['nDer'], tmpB['nDer'], nSamA[nLoci_cnt - 1], nSamB[nLoci_cnt - 1], segsites)
+					# mean Fst
+					FST.append(Fst(sum(tmpA['pi_SNPs']), sum(tmpB['pi_SNPs']), sum(piT), segsites))
+					
 	# compute average and std over of statistics over loci
 	if nLoci_cnt != 0 and len(ss) == nLoci:
 		test = 0
 		nSim_cnt += 1
 		nLoci_cnt = 0
+		
+		# statistics
 		bialsites_avg = cr_mean(bialsites)
 		bialsites_std = cr_std(bialsites, bialsites_avg)
 		sf_avg = cr_mean(sf)
@@ -307,6 +379,9 @@ for line in infile:
 		Gmin_std = cr_std(Gmin, Gmin_avg)
 		Gmax_avg = cr_mean(Gmax)
 		Gmax_std = cr_std(Gmax, Gmax_avg)
+		FST_avg = cr_mean(FST)
+		FST_std = cr_std(FST, FST_avg)
+		
 		#print("dataset {0}: {1} loci".format(nSim_cnt-1, len(ss)))
 		res += "{0}\t{1:.5f}\t{2:.5f}\t".format(nSim_cnt-1, bialsites_avg, bialsites_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(sf_avg, sf_std)
@@ -324,9 +399,12 @@ for line in infile:
 		res += "{0:.5f}\t{1:.5f}\t".format(minDivAB_avg, minDivAB_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(maxDivAB_avg, maxDivAB_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(Gmin_avg, Gmin_std)
-		res += "{0:.5f}\t{1:.5f}".format(Gmax_avg, Gmax_std)
-		
+		res += "{0:.5f}\t{1:.5f}\t".format(Gmax_avg, Gmax_std)
+		res += "{0:.5f}\t{1:.5f}\t".format(FST_avg, FST_std)
+		res += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}".format(ss_sf, ss_noSf, noSs_sf, noSs_noSf)
 		res += "\n"
 		if nSim_cnt == nSim:
-			print(res)
-
+			outfile = open("ABCstat_py.txt", "w")
+			outfile.write(res)
+			outfile.close()
+infile.close()
