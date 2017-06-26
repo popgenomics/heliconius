@@ -34,9 +34,9 @@
 **P_mig** = relative posterior probability of model with migration  
 
 ### compared models  
-**M0** = model of strict-isolation between surveyed species.
-**M1** = model of uni-lateral gene flow, only from species 2 (_rosina_) to species 1 (_chioneus_)
-**M2** = model of uni-lateral gene flow, only from species 1 (_chioneus_) to species 1 (_rosina_)
-**M3** = model of bi-lateral gene flow, at rates that can be different in both directions.
+**M0** = model of strict-isolation between surveyed species  
+**M1** = model of uni-lateral gene flow, only from species 2 (_rosina_) to species 1 (_chioneus_)  
+**M2** = model of uni-lateral gene flow, only from species 1 (_chioneus_) to species 1 (_rosina_)  
+**M3** = model of bi-lateral gene flow, at rates that can be different in both directions  
 
 
