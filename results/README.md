@@ -33,7 +33,6 @@
 **P_iso** = relative posterior probability of model with no migration  
 **P_mig** = relative posterior probability of model with migration  
 
-
 ### compared models  
 **M0** = model of strict-isolation between surveyed species.
 **M1** = model of uni-lateral gene flow, only from species 2 (_rosina_) to species 1 (_chioneus_)
