@@ -84,26 +84,46 @@ def Fst(piA, piB, piT, segsites):
 
 def sites(freqA, freqB, segsites):
 	sxA, sxB, ss, sf = 0, 0, 0, 0
+	successive_ss = [0]
+	previous_site = ""
 	for i in range(segsites):
 		if freqA[i] == 0:
 			if freqB[i] == 1:
 				sf += 1
+				if previous_site == "ss" or previous_site == "":
+					successive_ss.append(0)
+				previous_site = "sf"
 			if freqB[i] < 1:
 				sxB += 1
+				if previous_site == "ss" or previous_site == "":
+					successive_ss.append(0)
+				previous_site = "sxB"
 			continue
 		if freqA[i] == 1:
 			if freqB[i] == 0:
 				sf += 1
+				if previous_site == "ss" or previous_site == "":
+					successive_ss.append(0)
+				previous_site = "sf"
 			if freqB[i] > 0:
 				sxB += 1
+				if previous_site == "ss" or previous_site == "":
+					successive_ss.append(0)
+				previous_site = "sxB"
 			continue
 		else:
 			if freqB[i] == 0 or freqB[i] == 1:
 				sxA += 1
+				if previous_site == "ss" or previous_site == "":
+					successive_ss.append(0)
+				previous_site = "sxA"
 			else:
 				ss += 1
+				if previous_site == "ss" or previous_site == "":
+					successive_ss[len(successive_ss)-1] += 1
+				previous_site = "ss"
 			continue
-	res = {'sxA':sxA, 'sxB':sxB, 'sf':sf, 'ss':ss}
+	res = {'sxA':sxA, 'sxB':sxB, 'sf':sf, 'ss':ss, 'successive_ss':max(successive_ss)}
 	return(res)
 
 
@@ -206,6 +226,7 @@ res += "sf_avg\tsf_std\t"
 res += "sxA_avg\tsxA_std\t"
 res += "sxB_avg\tsxB_std\t"
 res += "ss_avg\tss_std\t"
+res += "successive_ss_avg\tsuccessive_ss_std\t"
 res += "piA_avg\tpiA_std\t"
 res += "piB_avg\tpiB_std\t"
 res += "thetaA_avg\tthetaA_std\t"
@@ -239,6 +260,7 @@ for line in infile:
 			sxA = []
 			sxB = []
 			ss = []
+			successive_ss = []
 			piA = []
 			piB = []
 			thetaA = []
@@ -267,6 +289,7 @@ for line in infile:
 			sxA.append(0)
 			sxB.append(0)
 			ss.append(0)
+			successive_ss.append(0)
 			piA.append(0)
 			piB.append(0)
 			thetaA.append(0)
@@ -301,6 +324,7 @@ for line in infile:
 					sxA.append(tmp['sxA'])
 					sxB.append(tmp['sxB'])
 					ss.append(tmp['ss'])
+					successive_ss.append(tmp['successive_ss'])
 					# test if loci has both ss, sf, or only one of two, etc ...
 					if tmp['sf'] > 0:
 						if tmp['ss'] > 0:
@@ -355,6 +379,8 @@ for line in infile:
 		sxB_std = cr_std(sxB, sxB_avg)
 		ss_avg = cr_mean(ss)
 		ss_std = cr_std(ss, ss_avg)
+		successive_ss_avg = cr_mean(successive_ss)
+		successive_ss_std = cr_std(successive_ss, successive_ss_avg)
 		piA_avg = cr_mean(piA)
 		piA_std = cr_std(piA, piA_avg)
 		piB_avg = cr_mean(piB)
@@ -388,6 +414,7 @@ for line in infile:
 		res += "{0:.5f}\t{1:.5f}\t".format(sxA_avg, sxA_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(sxB_avg, sxB_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(ss_avg, ss_std)
+		res += "{0:.5f}\t{1:.5f}\t".format(successive_ss_avg, successive_ss_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(piA_avg, piA_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(piB_avg, piB_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(thetaA_avg, thetaA_std)
