@@ -41,6 +41,29 @@ def cr_std(x, exp_X):
 		return(cr_sqrt(A-exp_X**2))
 
 
+def cr_pearsonR(x, y):
+	# computes correlation between arrays x and y
+	sumXi = 0.0
+	sumYi = 0.0
+	sumSquareX = 0.0
+	sumSquareY = 0.0
+	sumXiYi = 0.0
+	
+	nX = len(x)
+	
+	for i in range(nX):
+		sumXi += x[i];
+		sumYi += y[i];
+		sumSquareX += x[i]*x[i];
+		sumSquareY += y[i]*y[i];
+		sumXiYi += x[i]*y[i];
+	
+	numerator = nX*sumXiYi - sumXi * sumYi
+	denom1 = cr_sqrt(nX*sumSquareX - sumXi*sumXi)
+	denom2 = cr_sqrt(nX*sumSquareY - sumYi*sumYi)
+	return(numerator/(denom1*denom2))
+
+
 def compFreq(sequences, segsites):
 	# returns derived allele frequency for a number of 'segsites' positions
 	nDerAll = []
@@ -229,8 +252,10 @@ res += "ss_avg\tss_std\t"
 res += "successive_ss_avg\tsuccessive_ss_std\t"
 res += "piA_avg\tpiA_std\t"
 res += "piB_avg\tpiB_std\t"
+res += "pearson_r_pi\t"
 res += "thetaA_avg\tthetaA_std\t"
 res += "thetaB_avg\tthetaB_std\t"
+res += "pearson_r_theta\t"
 res += "DtajA_avg\tDtajA_std\t"
 res += "DtajB_avg\tDtajB_std\t"
 res += "divAB_avg\tdivAB_std\t"
@@ -240,6 +265,9 @@ res += "maxDivAB_avg\tmaxDivAB_std\t"
 res += "Gmin_avg\tGmin_std\t"
 res += "Gmax_avg\tGmax_std\t"
 res += "FST_avg\tFST_std\t"
+res += "pearson_r_divAB_netDivAB\t"
+res += "pearson_r_divAB_FST\t"
+res += "pearson_r_netDivAB_FST\t"
 res += "ss_sf\t" # number of loci with both ss and sf
 res += "ss_noSf\t" # number of loci with ss but no sf
 res += "noSs_sf\t" # number of loci without ss but with sf
@@ -385,10 +413,12 @@ for line in infile:
 		piA_std = cr_std(piA, piA_avg)
 		piB_avg = cr_mean(piB)
 		piB_std = cr_std(piB, piB_avg)
+		pearson_r_pi = cr_pearsonR(piA, piB)
 		thetaA_avg = cr_mean(thetaA)
 		thetaA_std = cr_std(thetaA, thetaA_avg)
 		thetaB_avg = cr_mean(thetaB)
 		thetaB_std = cr_std(thetaB, thetaB_avg)
+		pearson_r_theta = cr_pearsonR(thetaA, thetaB)
 		DtajA_avg = cr_mean(DtajA)
 		DtajA_std = cr_std(DtajA, DtajA_avg)
 		DtajB_avg = cr_mean(DtajB)
@@ -407,6 +437,9 @@ for line in infile:
 		Gmax_std = cr_std(Gmax, Gmax_avg)
 		FST_avg = cr_mean(FST)
 		FST_std = cr_std(FST, FST_avg)
+		pearson_r_div_netDiv = cr_pearsonR(divAB, netdivAB)
+		pearson_r_div_FST = cr_pearsonR(divAB, FST)
+		pearson_r_netDiv_FST = cr_pearsonR(netdivAB, FST)
 		
 		#print("dataset {0}: {1} loci".format(nSim_cnt-1, len(ss)))
 		res += "{0}\t{1:.5f}\t{2:.5f}\t".format(nSim_cnt-1, bialsites_avg, bialsites_std)
@@ -417,8 +450,10 @@ for line in infile:
 		res += "{0:.5f}\t{1:.5f}\t".format(successive_ss_avg, successive_ss_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(piA_avg, piA_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(piB_avg, piB_std)
+		res += "{0:.5f}\t".format(pearson_r_pi)
 		res += "{0:.5f}\t{1:.5f}\t".format(thetaA_avg, thetaA_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(thetaB_avg, thetaB_std)
+		res += "{0:.5f}\t".format(pearson_r_theta)
 		res += "{0:.5f}\t{1:.5f}\t".format(DtajA_avg, DtajA_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(DtajB_avg, DtajB_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(divAB_avg, divAB_std)
@@ -428,6 +463,9 @@ for line in infile:
 		res += "{0:.5f}\t{1:.5f}\t".format(Gmin_avg, Gmin_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(Gmax_avg, Gmax_std)
 		res += "{0:.5f}\t{1:.5f}\t".format(FST_avg, FST_std)
+		res += "{0:.5f}\t".format(pearson_r_div_netDiv)
+		res += "{0:.5f}\t".format(pearson_r_div_FST)
+		res += "{0:.5f}\t".format(pearson_r_netDiv_FST)
 		res += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}".format(ss_sf, ss_noSf, noSs_sf, noSs_noSf)
 		res += "\n"
 		if nSim_cnt == nSim:
