@@ -281,12 +281,13 @@ res += "ss_noSf\t" # number of loci with ss but no sf
 res += "noSs_sf\t" # number of loci without ss but with sf
 res += "noSs_noSf\n" # number of loci with no Ss or Sf
 
-infile = open(msfile, "r")
+#infile = open(msfile, "r")
 
 test = 0 
 nSim_cnt = 0 # count the number of treated multilocus simulations
 nLoci_cnt = 0 # count the number of treated loci within a simulation
-for line in infile:
+#for line in infile:
+for line in sys.stdin:
 	line = line.strip()
 	if "segsites" in line:
 		if nLoci_cnt == 0:
