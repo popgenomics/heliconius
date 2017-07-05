@@ -5,7 +5,7 @@ import os
 # check the arguments
 if len(sys.argv) != 6:
 	print("\n\tfasta2ABC.py produces a msLike output file from two alignments (one per species)")
-	print("\n\033[1;33m\tExample: ./fasta2ABC.py ama_Hmel200001_1.fas chi_Hmel200001_1.fas 0.75 10\033[0m\n")
+	print("\n\033[1;33m\tExample: ./fasta2ABC.py ama_Hmel200001_1.fas chi_Hmel200001_1.fas 0.75 10 Hmel200001_1\033[0m\n")
 	print("\t\targ1 =\tname of the fasta file containing the alignment for species A")
 	print("\t\targ2 =\tname of the fasta file containing the alignment for species B")
 	print("\t\targ3 =\tvalue in [0-1]. Corresponds to a threshold of %N above which a sequence is rejected")

@@ -32,10 +32,10 @@ if strand == "-":
 	infile = parse(fastaFileName, "fasta")
 	for i in infile:
 		res += ">{0}\n".format(i.id)
-		res += "{0}\n".format(i.seq().reverse_complement())
+		res += "{0}\n".format(i.seq.reverse_complement())
 	infile.close()
 	
-	outfile = open("test_" + fastaFileName, "w")
+	outfile = open(fastaFileName, "w")
 	outfile.write(res)
 	outfile.close()
 	
