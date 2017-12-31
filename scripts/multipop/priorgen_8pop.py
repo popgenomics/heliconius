@@ -8,27 +8,18 @@ from numpy.random import choice
 # beta(a, b, nSample)
 
 # msms line:
-# msms nsam nIter*nLoci -s tbs -r tbs tbs
-# -n 1 10 -n 2 tbs -n 3 tbs -n 4 tbs -n 5 tbs -n 6 tbs -n 7 tbs -n 8 tbs
-# -m 1 2 tbs -m 2 1 tbs -m 1 3 tbs -m 3 1 tbs -m 1 4 tbs -m 4 1 tbs -m 1 5 tbs -m 5 1 tbs -m 1 6 tbs -m 6 1 tbs -m 1 7 tbs -m 7 1 tbs -m 1 8 tbs -m 8 1 tbs
-# -m 2 3 tbs -m 3 2 tbs -m 2 4 tbs -m 4 2 tbs -m 2 5 tbs -m 5 2 tbs -m 2 6 tbs -m 6 2 tbs -m 2 7 tbs -m 7 2 tbs -m 2 8 tbs -m 8 2 tbs
-# -m 3 4 tbs -m 4 3 tbs -m 3 5 tbs -m 5 3 tbs -m 3 6 tbs -m 6 3 tbs -m 3 7 tbs -m 7 3 tbs -m 3 8 tbs -m 8 3 tbs
-# -m 4 5 tbs -m 5 4 tbs -m 4 6 tbs -m 6 4 tbs -m 4 7 tbs -m 7 4 tbs -m 4 8 tbs -m 8 4 tbs
-# -m 5 6 tbs -m 6 5 tbs -m 5 7 tbs -m 7 5 tbs -m 5 8 tbs -m 8 5 tbs
-# -m 6 7 tbs -m 7 6 tbs -m 6 8 tbs -m 8 6 tbs
-# -m 7 8 tbs -m 8 7 tbs
-
+# ./priorgen_8pop.py | msms tbs 40 -s tbs -r tbs tbs -I 8 tbs tbs tbs tbs tbs tbs tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -m 1 3 tbs -m 3 1 tbs -m 1 4 tbs -m 4 1 tbs -m 1 5 tbs -m 5 1 tbs -m 1 6 tbs -m 6 1 tbs -m 1 7 tbs -m 7 1 tbs -m 1 8 tbs -m 8 1 tbs -m 2 3 tbs -m 3 2 tbs -m 2 4 tbs -m 4 2 tbs -m 2 5 tbs -m 5 2 tbs -m 2 6 tbs -m 6 2 tbs -m 2 7 tbs -m 7 2 tbs -m 2 8 tbs -m 8 2 tbs -m 3 4 tbs -m 4 3 tbs -m 3 5 tbs -m 5 3 tbs -m 3 6 tbs -m 6 3 tbs -m 3 7 tbs -m 7 3 tbs -m 3 8 tbs -m 8 3 tbs -m 4 5 tbs -m 5 4 tbs -m 4 6 tbs -m 6 4 tbs -m 4 7 tbs -m 7 4 tbs -m 4 8 tbs -m 8 4 tbs -m 5 6 tbs -m 6 5 tbs -m 5 7 tbs -m 7 5 tbs -m 5 8 tbs -m 8 5 tbs -m 6 7 tbs -m 7 6 tbs -m 6 8 tbs -m 8 6 tbs -m 7 8 tbs -m 8 7 tbs -n 1 tbs -n 2 tbs -n 3 tbs -n 4 tbs -n 5 tbs -n 6 tbs -n 7 tbs -n 8 tbs -ej tbs 2 1 -en tbs 1 tbs -ej tbs 4 3 -en tbs 3 tbs -ej tbs 6 5 -en tbs 5 tbs -ej tbs 8 7 -en tbs 7 tbs -ej tbs 3 1 -en tbs 1 tbs -ej tbs 7 5 -en tbs 5 tbs -ej tbs 5 1 -en tbs 1 tbs
 
 # prior distribution
 Tau_prior = [0, 2.0]
-tau_scale = [1, 10]
+tau_scale = [1, 2.0]
 
 N_scale = [0, 2]
-ref_N = 10
+ref_N = 1
 shape_beta = [0, 10]
 
 M_prior = [0, 0.1]
-list_M = [0, 0.1, 10]
+list_M = [0, 0.01, 0.1, 1, 10]
 
 # n multilocus iterations
 nIter = 10
@@ -198,8 +189,4 @@ for iter_i in range(nIter):
 outfile = open("priorfile.txt", "w")
 outfile.write(priorfile)
 outfile.close()
-
-# msms tbs 40 -s tbs -r tbs tbs -I 8 tbs tbs tbs tbs tbs tbs tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -m 1 3 tbs -m 3 1 tbs -m 1 4 tbs -m 4 1 tbs -m 1 5 tbs -m 5 1 tbs -m 1 6 tbs -m 6 1 tbs -m 1 7 tbs -m 7 1 tbs -m 1 8 tbs -m 8 1 tbs -m 2 3 tbs -m 3 2 tbs -m 2 4 tbs -m 4 2 tbs -m 2 5 tbs -m 5 2 tbs -m 2 6 tbs -m 6 2 tbs -m 2 7 tbs -m 7 2 tbs -m 2 8 tbs -m 8 2 tbs -m 3 4 tbs -m 4 3 tbs -m 3 5 tbs -m 5 3 tbs -m 3 6 tbs -m 6 3 tbs -m 3 7 tbs -m 7 3 tbs -m 3 8 tbs -m 8 3 tbs -m 4 5 tbs -m 5 4 tbs -m 4 6 tbs -m 6 4 tbs -m 4 7 tbs -m 7 4 tbs -m 4 8 tbs -m 8 4 tbs -m 5 6 tbs -m 6 5 tbs -m 5 7 tbs -m 7 5 tbs -m 5 8 tbs -m 8 5 tbs -m 6 7 tbs -m 7 6 tbs -m 6 8 tbs -m 8 6 tbs -m 7 8 tbs -m 8 7 tbs -n 1 tbs -n 2 tbs -n 3 tbs -n 4 tbs -n 5 tbs -n 6 tbs -n 7 tbs -n 8 tbs -ej tbs 2 1 -en tbs 1 tbs -ej tbs 4 3 -en tbs 3 tbs -ej tbs 6 5 -en tbs 5 tbs -ej tbs 8 7 -en tbs 7 tbs -ej tbs 3 1 -en tbs 1 tbs -ej tbs 7 5 -en tbs 5 tbs -ej tbs 5 1 -en tbs 1 tbs
-
-# msms tbs nIter.nLoci -S tbs -r tbs tbs -I 8 tbs tbs tbs tbs tbs tbs tbs tbs 0 -m 1 2 tbs -m 2 1 tbs -m 1 3 tbs -m 3 1 tbs -m 1 4 tbs -m 4 1 tbs -m 1 5 tbs -m 5 1 tbs -m 1 6 tbs -m 6 1 tbs -m 1 7 tbs -m 7 1 tbs -m 1 8 tbs -m 8 1 tbs -m 2 3 tbs -m 3 2 tbs -m 2 4 tbs -m 4 2 tbs -m 2 5 tbs -m 5 2 tbs -m 2 6 tbs -m 6 2 tbs -m 2 7 tbs -m 7 2 tbs -m 2 8 tbs -m 8 2 tbs -m 3 4 tbs -m 4 3 tbs -m 3 5 tbs -m 5 3 tbs -m 3 6 tbs -m 6 3 tbs -m 3 7 tbs -m 7 3 tbs -m 3 8 tbs -m 8 3 tbs -m 4 5 tbs -m 5 4 tbs -m 4 6 tbs -m 6 4 tbs -m 4 7 tbs -m 7 4 tbs -m 4 8 tbs -m 8 4 tbs -m 5 6 tbs -m 6 5 tbs -m 5 7 tbs -m 7 5 tbs -m 5 8 tbs -m 8 5 tbs -m 6 7 tbs -m 7 6 tbs -m 6 8 tbs -m 8 6 tbs -m 7 8 tbs -m 8 7 tbs -n 1 tbs -n 2 tbs -n 3 tbs -n 4 tbs -n 5 tbs -n 6 tbs -n 7 tbs -n 8 tbs -ej tbs 2 1 -en tbs 1 tbs -ej tbs 4 3 -en tbs 3 tbs -ej tbs 6 5 -en tbs 5 tbs -ej tbs 8 7 -en tbs 7 tbs -ej tbs 3 1 -en tbs 1 tbs -ej tbs 7 5 -en tbs 5 tbs -ej tbs 5 1 -en tbs 1 tbs
 
