@@ -20,9 +20,10 @@ shape_beta = [0, 10]
 
 M_prior = [0, 0.1]
 list_M = [0, 0.01, 0.1, 1, 10]
+#list_M = [0, 0, 0, 0]
 
 # n multilocus iterations
-nIter = 10
+nIter = 1000
 
 # read informations about loci from "bpfile"
 infile = open("bpfile", "r") # nSNPs L n1 n2 n3 n4 n5 n6 n7 n8 rho
