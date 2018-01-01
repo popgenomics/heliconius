@@ -7,8 +7,10 @@
 #include <cmath>
 
 void get_sample_sizes(std::vector <unsigned int> & n1, std::vector <unsigned int> & n2, std::vector <unsigned int> & n3, std::vector <unsigned int> & n4, std::vector <unsigned int> & n5, std::vector <unsigned int> & n6, std::vector <unsigned int> & n7, std::vector <unsigned int> & n8, std::vector <unsigned int> & nTot, std::vector <size_t> & nSNPs);
-void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned int nsam2, const unsigned int nsam3, const unsigned int nsam4, const unsigned int nsam5, const unsigned int nsam6, const unsigned int nsam7, const unsigned int nsam8, const std::vector <std::string> & block_haplotypes, std::vector <unsigned int> & sx1, std::vector <unsigned int> & sx2, std::vector <unsigned int> & sx3, std::vector <unsigned int> & sx4, std::vector <unsigned int> & sx5, std::vector <unsigned int> & sx6, std::vector <unsigned int> & sx7, std::vector <unsigned int> & sx8 );
+void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned int nsam2, const unsigned int nsam3, const unsigned int nsam4, const unsigned int nsam5, const unsigned int nsam6, const unsigned int nsam7, const unsigned int nsam8, const std::vector <std::string> & block_haplotypes, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8 );
 void get_catFreq(const float & freq, const size_t & nsam, float & pop, unsigned int & cat);
+void print_stats(const unsigned int & nLoci, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8);
+void mean_deviation(const std::vector <unsigned int> & tableau, const unsigned int & nLoci, float & mean, float & sd);
 
 // g++ msmscalc_8pop.cpp -std=c++17 -O3 -o msmscalc_multipop
 int main(int argc, char* argv[]){
@@ -34,14 +36,14 @@ int main(int argc, char* argv[]){
 	}
 	
 	// summary statistics
-	std::vector <unsigned int> sx1;
-	std::vector <unsigned int> sx2;
-	std::vector <unsigned int> sx3;
-	std::vector <unsigned int> sx4;
-	std::vector <unsigned int> sx5;
-	std::vector <unsigned int> sx6;
-	std::vector <unsigned int> sx7;
-	std::vector <unsigned int> sx8;
+	std::vector <unsigned int> sx_1;
+	std::vector <unsigned int> sx_2;
+	std::vector <unsigned int> sx_3;
+	std::vector <unsigned int> sx_4;
+	std::vector <unsigned int> sx_5;
+	std::vector <unsigned int> sx_6;
+	std::vector <unsigned int> sx_7;
+	std::vector <unsigned int> sx_8;
 	
 	unsigned int nDataset(0); // count the number of simulated datasets over the whole msmsFile
 	unsigned int test(0);
@@ -71,10 +73,11 @@ int main(int argc, char* argv[]){
 				
 				// treat the alignement of the locus i
 				//compute_stats();
-				compute_stats(nSNPs[locus], n1[locus], n2[locus], n3[locus], n4[locus], n5[locus], n6[locus], n7[locus], n8[locus], block_haplotypes, sx1, sx2, sx3, sx4, sx5, sx6, sx7, sx8 );
+				compute_stats(nSNPs[locus], n1[locus], n2[locus], n3[locus], n4[locus], n5[locus], n6[locus], n7[locus], n8[locus], block_haplotypes, sx_1, sx_2, sx_3, sx_4, sx_5, sx_6, sx_7, sx_8 );
 //				std::cout << "POUET: " << block_haplotypes.size() << std::endl;
 				
 				if( locus == nLoci-1 ){
+					print_stats(nLoci, sx_1, sx_2, sx_3, sx_4, sx_5, sx_6, sx_7, sx_8);
 					locus = 0;
 					++nDataset;
 				}else{
@@ -88,6 +91,10 @@ int main(int argc, char* argv[]){
 		
 	}
 	
+	for(i=0; i<sx_1.size(); ++i){
+		std::cout << sx_1[i] << " ";
+	}
+	std::cout << std::endl;
 	return 0;
 }
 
@@ -143,7 +150,7 @@ void get_sample_sizes(std::vector <unsigned int> & n1, std::vector <unsigned int
 	}
 }
 
-void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned int nsam2, const unsigned int nsam3, const unsigned int nsam4, const unsigned int nsam5, const unsigned int nsam6, const unsigned int nsam7, const unsigned int nsam8, const std::vector <std::string> & block_haplotypes, std::vector <unsigned int> & sx1, std::vector <unsigned int> & sx2, std::vector <unsigned int> & sx3, std::vector <unsigned int> & sx4, std::vector <unsigned int> & sx5, std::vector <unsigned int> & sx6, std::vector <unsigned int> & sx7, std::vector <unsigned int> & sx8 ){
+void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned int nsam2, const unsigned int nsam3, const unsigned int nsam4, const unsigned int nsam5, const unsigned int nsam6, const unsigned int nsam7, const unsigned int nsam8, const std::vector <std::string> & block_haplotypes, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8 ){
 	size_t pos(0);
 	size_t ind(0);
 
@@ -279,6 +286,14 @@ void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned i
 		// ss
 		// ss_1_2, ss_3_4, ss_5_6, ss_7_8, ss_12_34, ss_56_78, ss_1234_5678
 	}
+	sx_1.push_back(sx_1_tmp);
+	sx_2.push_back(sx_2_tmp);
+	sx_3.push_back(sx_3_tmp);
+	sx_4.push_back(sx_4_tmp);
+	sx_5.push_back(sx_5_tmp);
+	sx_6.push_back(sx_6_tmp);
+	sx_7.push_back(sx_7_tmp);
+	sx_8.push_back(sx_8_tmp);
 }
 
 
@@ -293,5 +308,70 @@ void get_catFreq(const float & freq, const size_t & nsam, float & pop, unsigned 
 		cat = 1;
 		pop = 0.5;
 	}
+}
+
+void print_stats(const unsigned int & nLoci, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8){
+	float mean_sx_1(0.0); float sd_sx_1(0.0);
+	float mean_sx_2(0.0); float sd_sx_2(0.0);
+	float mean_sx_3(0.0); float sd_sx_3(0.0);
+	float mean_sx_4(0.0); float sd_sx_4(0.0);
+	float mean_sx_5(0.0); float sd_sx_5(0.0);
+	float mean_sx_6(0.0); float sd_sx_6(0.0);
+	float mean_sx_7(0.0); float sd_sx_7(0.0);
+	float mean_sx_8(0.0); float sd_sx_8(0.0);
+	
+	mean_deviation(sx_1, nLoci, mean_sx_1, sd_sx_1);
+	mean_deviation(sx_2, nLoci, mean_sx_2, sd_sx_2);
+	mean_deviation(sx_3, nLoci, mean_sx_3, sd_sx_3);
+	mean_deviation(sx_4, nLoci, mean_sx_4, sd_sx_4);
+	mean_deviation(sx_5, nLoci, mean_sx_5, sd_sx_5);
+	mean_deviation(sx_6, nLoci, mean_sx_6, sd_sx_6);
+	mean_deviation(sx_7, nLoci, mean_sx_7, sd_sx_7);
+	mean_deviation(sx_8, nLoci, mean_sx_8, sd_sx_8);
+
+	sx_1.clear();
+	sx_2.clear();
+	sx_3.clear();
+	sx_4.clear();
+	sx_5.clear();
+	sx_6.clear();
+	sx_7.clear();
+	sx_8.clear();
+
+	std::cout << "sx_1_avg\tsx_1_std\t";
+	std::cout << "sx_2_avg\tsx_2_std\t";
+	std::cout << "sx_3_avg\tsx_3_std\t";
+	std::cout << "sx_4_avg\tsx_4_std\t";
+	std::cout << "sx_5_avg\tsx_5_std\t";
+	std::cout << "sx_6_avg\tsx_6_std\t";
+	std::cout << "sx_7_avg\tsx_7_std\t";
+	std::cout << "sx_8_avg\tsx_8_std\t" << std::endl;
+	std::cout << mean_sx_1 << "\t" << sd_sx_1 << "\t";
+	std::cout << mean_sx_2 << "\t" << sd_sx_2 << "\t";
+	std::cout << mean_sx_3 << "\t" << sd_sx_3 << "\t";
+	std::cout << mean_sx_4 << "\t" << sd_sx_4 << "\t";
+	std::cout << mean_sx_5 << "\t" << sd_sx_5 << "\t";
+	std::cout << mean_sx_6 << "\t" << sd_sx_6 << "\t";
+	std::cout << mean_sx_7 << "\t" << sd_sx_7 << "\t";
+	std::cout << mean_sx_8 << "\t" << sd_sx_8 << std::endl;
+}
+
+void mean_deviation(const std::vector <unsigned int> & tableau, const unsigned int & nLoci, float & mean, float & sd){
+	size_t i(0);
+	
+	// compute the mean
+	float mean_tmp(0.0);
+	for(i=0; i<nLoci; ++i){
+		mean_tmp += tableau[i];
+	}
+	mean_tmp /= (1.0 * nLoci);
+
+	// compute the sd
+	float sd_tmp(0.0);
+	for(i=0; i<nLoci; ++i){
+		sd_tmp += pow(tableau[i] - mean_tmp, 2);
+	}
+	mean = mean_tmp;
+	sd = sqrt(sd_tmp/(1.0 * nLoci));
 }
 
