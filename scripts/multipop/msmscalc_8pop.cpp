@@ -7,9 +7,13 @@
 #include <cmath>
 
 void get_sample_sizes(std::vector <unsigned int> & n1, std::vector <unsigned int> & n2, std::vector <unsigned int> & n3, std::vector <unsigned int> & n4, std::vector <unsigned int> & n5, std::vector <unsigned int> & n6, std::vector <unsigned int> & n7, std::vector <unsigned int> & n8, std::vector <unsigned int> & nTot, std::vector <size_t> & nSNPs);
-void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned int nsam2, const unsigned int nsam3, const unsigned int nsam4, const unsigned int nsam5, const unsigned int nsam6, const unsigned int nsam7, const unsigned int nsam8, const std::vector <std::string> & block_haplotypes, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8, std::vector <unsigned int> & sx_12, std::vector <unsigned int> & sx_34, std::vector <unsigned int> & sx_56, std::vector <unsigned int> & sx_78);
+
+void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned int nsam2, const unsigned int nsam3, const unsigned int nsam4, const unsigned int nsam5, const unsigned int nsam6, const unsigned int nsam7, const unsigned int nsam8, const std::vector <std::string> & block_haplotypes, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8, std::vector <unsigned int> & sx_12, std::vector <unsigned int> & sx_34, std::vector <unsigned int> & sx_56, std::vector <unsigned int> & sx_78, std::vector <unsigned int> & sx_1234, std::vector <unsigned int> & sx_5678, std::vector <unsigned int> & sf_1_2, std::vector <unsigned int> & sf_3_4, std::vector <unsigned int> & sf_5_6, std::vector <unsigned int> & sf_7_8, std::vector <unsigned int> & sf_12_34, std::vector <unsigned int> & sf_56_78, std::vector <unsigned int> & sf_1234_5678, std::vector <unsigned int> & ss_1_2, std::vector <unsigned int> & ss_3_4, std::vector <unsigned int> & ss_5_6, std::vector <unsigned int> & ss_7_8, std::vector <unsigned int> & ss_12_34, std::vector <unsigned int> & ss_56_78, std::vector <unsigned int> & ss_1234_5678);
+
 void get_catFreq(const float & freq, const size_t & nsam, float & pop, unsigned int & cat);
-void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8);
+
+void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8, std::vector <unsigned int> & sx_12, std::vector <unsigned int> & sx_34, std::vector <unsigned int> & sx_56, std::vector <unsigned int> & sx_78, std::vector <unsigned int> & sx_1234, std::vector <unsigned int> & sx_5678, std::vector <unsigned int> & sf_1_2, std::vector <unsigned int> & sf_3_4, std::vector <unsigned int> & sf_5_6, std::vector <unsigned int> & sf_7_8, std::vector <unsigned int> & sf_12_34, std::vector <unsigned int> & sf_56_78, std::vector <unsigned int> & sf_1234_5678, std::vector <unsigned int> & ss_1_2, std::vector <unsigned int> & ss_3_4, std::vector <unsigned int> & ss_5_6, std::vector <unsigned int> & ss_7_8, std::vector <unsigned int> & ss_12_34, std::vector <unsigned int> & ss_56_78, std::vector <unsigned int> & ss_1234_5678);
+
 void mean_deviation(const std::vector <unsigned int> & tableau, const unsigned int & nLoci, float & mean, float & sd);
 
 // g++ msmscalc_8pop.cpp -std=c++17 -O3 -o msmscalc_multipop
@@ -44,12 +48,29 @@ int main(int argc, char* argv[]){
 	std::vector <unsigned int> sx_6;
 	std::vector <unsigned int> sx_7;
 	std::vector <unsigned int> sx_8;
-
 	std::vector <unsigned int> sx_12;
 	std::vector <unsigned int> sx_34;
 	std::vector <unsigned int> sx_56;
 	std::vector <unsigned int> sx_78;
+	std::vector <unsigned int> sx_1234;
+	std::vector <unsigned int> sx_5678;
+	
+	std::vector <unsigned int> sf_1_2;
+	std::vector <unsigned int> sf_3_4;
+	std::vector <unsigned int> sf_5_6;
+	std::vector <unsigned int> sf_7_8;
+	std::vector <unsigned int> sf_12_34;
+	std::vector <unsigned int> sf_56_78;
+	std::vector <unsigned int> sf_1234_5678;
 
+	std::vector <unsigned int> ss_1_2;
+	std::vector <unsigned int> ss_3_4;
+	std::vector <unsigned int> ss_5_6;
+	std::vector <unsigned int> ss_7_8;
+	std::vector <unsigned int> ss_12_34;
+	std::vector <unsigned int> ss_56_78;
+	std::vector <unsigned int> ss_1234_5678;
+	
 	
 	size_t nDataset(0); // count the number of simulated datasets over the whole msmsFile
 	unsigned int test(0);
@@ -79,12 +100,12 @@ int main(int argc, char* argv[]){
 				
 				// treat the alignement of the locus i
 				//compute_stats();
-				compute_stats(nSNPs[locus], n1[locus], n2[locus], n3[locus], n4[locus], n5[locus], n6[locus], n7[locus], n8[locus], block_haplotypes, sx_1, sx_2, sx_3, sx_4, sx_5, sx_6, sx_7, sx_8, sx_12, sx_34, sx_56, sx_78 );
+				compute_stats(nSNPs[locus], n1[locus], n2[locus], n3[locus], n4[locus], n5[locus], n6[locus], n7[locus], n8[locus], block_haplotypes, sx_1, sx_2, sx_3, sx_4, sx_5, sx_6, sx_7, sx_8, sx_12, sx_34, sx_56, sx_78, sx_1234, sx_5678, sf_1_2, sf_3_4, sf_5_6, sf_7_8, sf_12_34, sf_56_78, sf_1234_5678, ss_1_2, ss_3_4, ss_5_6, ss_7_8, ss_12_34, ss_56_78, ss_1234_5678 );
 //				std::cout << "POUET: " << block_haplotypes.size() << std::endl;
 				
 				if( locus == nLoci-1 ){
 					++nDataset;
-					print_stats(nLoci, nDataset, sx_1, sx_2, sx_3, sx_4, sx_5, sx_6, sx_7, sx_8);
+					print_stats(nLoci, nDataset, sx_1, sx_2, sx_3, sx_4, sx_5, sx_6, sx_7, sx_8, sx_12, sx_34, sx_56, sx_78, sx_1234, sx_5678, sf_1_2, sf_3_4, sf_5_6, sf_7_8, sf_12_34, sf_56_78, sf_1234_5678, ss_1_2, ss_3_4, ss_5_6, ss_7_8, ss_12_34, ss_56_78, ss_1234_5678);
 					locus = 0;
 				}else{
 					++locus;
@@ -97,10 +118,10 @@ int main(int argc, char* argv[]){
 		
 	}
 	
-	for(i=0; i<sx_1.size(); ++i){
+/*	for(i=0; i<sx_1.size(); ++i){
 		std::cout << sx_1[i] << " ";
 	}
-	std::cout << std::endl;
+	std::cout << std::endl;*/
 	return 0;
 }
 
@@ -156,7 +177,7 @@ void get_sample_sizes(std::vector <unsigned int> & n1, std::vector <unsigned int
 	}
 }
 
-void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned int nsam2, const unsigned int nsam3, const unsigned int nsam4, const unsigned int nsam5, const unsigned int nsam6, const unsigned int nsam7, const unsigned int nsam8, const std::vector <std::string> & block_haplotypes, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8, std::vector <unsigned int> & sx_12, std::vector <unsigned int> & sx_34, std::vector <unsigned int> & sx_56, std::vector <unsigned int> & sx_78){
+void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned int nsam2, const unsigned int nsam3, const unsigned int nsam4, const unsigned int nsam5, const unsigned int nsam6, const unsigned int nsam7, const unsigned int nsam8, const std::vector <std::string> & block_haplotypes, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8, std::vector <unsigned int> & sx_12, std::vector <unsigned int> & sx_34, std::vector <unsigned int> & sx_56, std::vector <unsigned int> & sx_78, std::vector <unsigned int> & sx_1234, std::vector <unsigned int> & sx_5678, std::vector <unsigned int> & sf_1_2, std::vector <unsigned int> & sf_3_4, std::vector <unsigned int> & sf_5_6, std::vector <unsigned int> & sf_7_8, std::vector <unsigned int> & sf_12_34, std::vector <unsigned int> & sf_56_78, std::vector <unsigned int> & sf_1234_5678, std::vector <unsigned int> & ss_1_2, std::vector <unsigned int> & ss_3_4, std::vector <unsigned int> & ss_5_6, std::vector <unsigned int> & ss_7_8, std::vector <unsigned int> & ss_12_34, std::vector <unsigned int> & ss_56_78, std::vector <unsigned int> & ss_1234_5678){
 	size_t pos(0);
 	size_t ind(0);
 
@@ -204,6 +225,22 @@ void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned i
 	unsigned int sx_78_tmp(0);
 	unsigned int sx_1234_tmp(0);
 	unsigned int sx_5678_tmp(0);
+
+	unsigned int sf_1_2_tmp(0);
+	unsigned int sf_3_4_tmp(0);
+	unsigned int sf_5_6_tmp(0);
+	unsigned int sf_7_8_tmp(0);
+	unsigned int sf_12_34_tmp(0);
+	unsigned int sf_56_78_tmp(0);
+	unsigned int sf_1234_5678_tmp(0);
+
+	unsigned int ss_1_2_tmp(0);
+	unsigned int ss_3_4_tmp(0);
+	unsigned int ss_5_6_tmp(0);
+	unsigned int ss_7_8_tmp(0);
+	unsigned int ss_12_34_tmp(0);
+	unsigned int ss_56_78_tmp(0);
+	unsigned int ss_1234_5678_tmp(0);
 
 	for( pos=0; pos<nSNP; ++pos){ // loop over SNPs
 		freq_1.push_back(0.0);
@@ -301,11 +338,101 @@ void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned i
 			++sx_78_tmp; 
 		}
 
+		if( cat_1 == 1 && cat_2 == 1 && cat_3 == 1 && cat_4 == 1 && cat_5+cat_6+cat_7+cat_8 == 0){
+			++sx_1234_tmp; 
+		}
+
+		if( cat_5 == 1 && cat_6 == 1 && cat_7 == 1 && cat_8 == 1 && cat_1+cat_2+cat_3+cat_4 == 0){
+			++sx_5678_tmp; 
+		}
+
 		// sf
 		// sf_1_2, sf_3_4, sf_5_6, sf_7_8, sf_12_34, sf_56_78, sf_1234_5678
+		if( cat_1 == 0 && cat_2 == 0 ){
+			if( pop_1 != pop_2 ){
+				++sf_1_2_tmp;
+			}
+		}
+
+		if( cat_3 == 0 && cat_4 == 0 ){
+			if( pop_3 != pop_4 ){
+				++sf_3_4_tmp;
+			}
+		}
 		
-		// ss
-		// ss_1_2, ss_3_4, ss_5_6, ss_7_8, ss_12_34, ss_56_78, ss_1234_5678
+		if( cat_5 == 0 && cat_6 == 0 ){
+			if( pop_5 != pop_6 ){
+				++sf_5_6_tmp;
+			}
+		}
+
+		if( cat_7 == 0 && cat_8 == 0 ){
+			if( pop_7 != pop_8 ){
+				++sf_7_8_tmp;
+			}
+		}
+
+		if( cat_1 == 0 && cat_2 == 0 && cat_3 == 0 && cat_4 == 0 ){
+			if( pop_1 == pop_2 ){
+				if( pop_3 == pop_4 ){
+					if( pop_1 != pop_3){
+						++sf_12_34_tmp;
+					}
+				}
+			}
+		}
+
+		if( cat_5 == 0 && cat_6 == 0 && cat_7 == 0 && cat_8 == 0 ){
+			if( pop_5 == pop_6 ){
+				if( pop_7 == pop_8 ){
+					if( pop_5 != pop_7){
+						++sf_56_78_tmp;
+					}
+				}
+			}
+		}
+
+		if( cat_1 + cat_2 + cat_3 + cat_4 + cat_5 + cat_6 + cat_7 + cat_8 == 0){
+			if( pop_1 + pop_2 + pop_3 + pop_4 == 0 ){ // if populations 1:4 fixed the same allele '0'
+				if( pop_5 + pop_6 + pop_7 + pop_8 == 4){ // if populations 5:8 fixed the same allele '1'
+					++sf_1234_5678_tmp;
+				}
+			}else if( pop_1 + pop_2 + pop_3 + pop_4 == 4){
+				if( pop_5 + pop_6 + pop_7 + pop_8 == 0){ // if populations 5:8 fixed the same allele '9'
+					++sf_1234_5678_tmp;
+				}
+			}
+		}
+		
+		// ++ss
+		// ++ss_1_2, ++ss_3_4, ++ss_5_6, ++ss_7_8, ++ss_12_34, ++ss_56_78, ++ss_1234_5678
+		if( cat_1 + cat_2 == 2){
+			++ss_1_2_tmp;
+		}
+		
+		if( cat_3 + cat_4 == 2){
+			++ss_3_4_tmp;
+		}
+		
+		if( cat_5 + cat_6 == 2){
+			++ss_5_6_tmp;
+		}
+	
+		if( cat_7 + cat_8 == 2){	
+			++ss_7_8_tmp;
+		}
+
+		if( cat_1 + cat_2 + cat_3 + cat_4 == 4){			
+			++ss_12_34_tmp;
+		}
+		
+		if( cat_5 + cat_6 + cat_7 + cat_8 == 4){
+			++ss_56_78_tmp;
+		}
+
+		if( cat_1 + cat_2 + cat_3 + cat_4 + cat_5 + cat_6 + cat_7 + cat_8 == 8){
+			++ss_1234_5678_tmp;
+		}
 	}
 	sx_1.push_back(sx_1_tmp);
 	sx_2.push_back(sx_2_tmp);
@@ -315,12 +442,28 @@ void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned i
 	sx_6.push_back(sx_6_tmp);
 	sx_7.push_back(sx_7_tmp);
 	sx_8.push_back(sx_8_tmp);
-
 	sx_12.push_back(sx_12_tmp);
 	sx_34.push_back(sx_34_tmp);
 	sx_56.push_back(sx_56_tmp);
 	sx_78.push_back(sx_78_tmp);
+	sx_1234.push_back(sx_1234_tmp);
+	sx_5678.push_back(sx_5678_tmp);
 	
+	sf_1_2.push_back(sf_1_2_tmp);
+	sf_3_4.push_back(sf_3_4_tmp);
+	sf_5_6.push_back(sf_5_6_tmp);
+	sf_7_8.push_back(sf_7_8_tmp);
+	sf_12_34.push_back(sf_12_34_tmp);
+	sf_56_78.push_back(sf_56_78_tmp);
+	sf_1234_5678.push_back(sf_1234_5678_tmp);
+	
+	ss_1_2.push_back(ss_1_2_tmp);
+	ss_3_4.push_back(ss_3_4_tmp);
+	ss_5_6.push_back(ss_5_6_tmp);
+	ss_7_8.push_back(ss_7_8_tmp);
+	ss_12_34.push_back(ss_12_34_tmp);
+	ss_56_78.push_back(ss_56_78_tmp);
+	ss_1234_5678.push_back(ss_1234_5678_tmp);
 }
 
 
@@ -337,7 +480,7 @@ void get_catFreq(const float & freq, const size_t & nsam, float & pop, unsigned 
 	}
 }
 
-void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8){
+void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8, std::vector <unsigned int> & sx_12, std::vector <unsigned int> & sx_34, std::vector <unsigned int> & sx_56, std::vector <unsigned int> & sx_78, std::vector <unsigned int> & sx_1234, std::vector <unsigned int> & sx_5678, std::vector <unsigned int> & sf_1_2, std::vector <unsigned int> & sf_3_4, std::vector <unsigned int> & sf_5_6, std::vector <unsigned int> & sf_7_8, std::vector <unsigned int> & sf_12_34, std::vector <unsigned int> & sf_56_78, std::vector <unsigned int> & sf_1234_5678, std::vector <unsigned int> & ss_1_2, std::vector <unsigned int> & ss_3_4, std::vector <unsigned int> & ss_5_6, std::vector <unsigned int> & ss_7_8, std::vector <unsigned int> & ss_12_34, std::vector <unsigned int> & ss_56_78, std::vector <unsigned int> & ss_1234_5678){
 	float mean_sx_1(0.0); float sd_sx_1(0.0);
 	float mean_sx_2(0.0); float sd_sx_2(0.0);
 	float mean_sx_3(0.0); float sd_sx_3(0.0);
@@ -346,11 +489,29 @@ void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vecto
 	float mean_sx_6(0.0); float sd_sx_6(0.0);
 	float mean_sx_7(0.0); float sd_sx_7(0.0);
 	float mean_sx_8(0.0); float sd_sx_8(0.0);
-	
 	float mean_sx_12(0.0); float sd_sx_12(0.0);
 	float mean_sx_34(0.0); float sd_sx_34(0.0);
 	float mean_sx_56(0.0); float sd_sx_56(0.0);
 	float mean_sx_78(0.0); float sd_sx_78(0.0);
+	float mean_sx_1234(0.0); float sd_sx_1234(0.0);
+	float mean_sx_5678(0.0); float sd_sx_5678(0.0);
+
+	float mean_sf_1_2(0.0); float sd_sf_1_2(0.0);
+	float mean_sf_3_4(0.0); float sd_sf_3_4(0.0);
+	float mean_sf_5_6(0.0); float sd_sf_5_6(0.0);
+	float mean_sf_7_8(0.0); float sd_sf_7_8(0.0);
+	float mean_sf_12_34(0.0); float sd_sf_12_34(0.0);
+	float mean_sf_56_78(0.0); float sd_sf_56_78(0.0);
+	float mean_sf_1234_5678(0.0); float sd_sf_1234_5678(0.0);
+
+	float mean_ss_1_2(0.0); float sd_ss_1_2(0.0);
+	float mean_ss_3_4(0.0); float sd_ss_3_4(0.0);
+	float mean_ss_5_6(0.0); float sd_ss_5_6(0.0);
+	float mean_ss_7_8(0.0); float sd_ss_7_8(0.0);
+	float mean_ss_12_34(0.0); float sd_ss_12_34(0.0);
+	float mean_ss_56_78(0.0); float sd_ss_56_78(0.0);
+	float mean_ss_1234_5678(0.0); float sd_ss_1234_5678(0.0);
+
 
 	mean_deviation(sx_1, nLoci, mean_sx_1, sd_sx_1);
 	mean_deviation(sx_2, nLoci, mean_sx_2, sd_sx_2);
@@ -360,7 +521,29 @@ void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vecto
 	mean_deviation(sx_6, nLoci, mean_sx_6, sd_sx_6);
 	mean_deviation(sx_7, nLoci, mean_sx_7, sd_sx_7);
 	mean_deviation(sx_8, nLoci, mean_sx_8, sd_sx_8);
-
+	mean_deviation(sx_12, nLoci, mean_sx_12, sd_sx_12);
+	mean_deviation(sx_34, nLoci, mean_sx_34, sd_sx_34);
+	mean_deviation(sx_56, nLoci, mean_sx_56, sd_sx_56);
+	mean_deviation(sx_78, nLoci, mean_sx_78, sd_sx_78);
+	mean_deviation(sx_1234, nLoci, mean_sx_1234, sd_sx_1234);
+	mean_deviation(sx_5678, nLoci, mean_sx_5678, sd_sx_5678);
+	
+	mean_deviation(sf_1_2, nLoci, mean_sf_1_2, sd_sf_1_2);
+	mean_deviation(sf_3_4, nLoci, mean_sf_3_4, sd_sf_3_4);
+	mean_deviation(sf_5_6, nLoci, mean_sf_5_6, sd_sf_5_6);
+	mean_deviation(sf_7_8, nLoci, mean_sf_7_8, sd_sf_7_8);
+	mean_deviation(sf_12_34, nLoci, mean_sf_12_34, sd_sf_12_34);
+	mean_deviation(sf_56_78, nLoci, mean_sf_56_78, sd_sf_56_78);
+	mean_deviation(sf_1234_5678, nLoci, mean_sf_1234_5678, sd_sf_1234_5678);
+	
+	mean_deviation(ss_1_2, nLoci, mean_ss_1_2, sd_ss_1_2);
+	mean_deviation(ss_3_4, nLoci, mean_ss_3_4, sd_ss_3_4);
+	mean_deviation(ss_5_6, nLoci, mean_ss_5_6, sd_ss_5_6);
+	mean_deviation(ss_7_8, nLoci, mean_ss_7_8, sd_ss_7_8);
+	mean_deviation(ss_12_34, nLoci, mean_ss_12_34, sd_ss_12_34);
+	mean_deviation(ss_56_78, nLoci, mean_ss_56_78, sd_ss_56_78);
+	mean_deviation(ss_1234_5678, nLoci, mean_ss_1234_5678, sd_ss_1234_5678);
+	
 	sx_1.clear();
 	sx_2.clear();
 	sx_3.clear();
@@ -369,6 +552,28 @@ void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vecto
 	sx_6.clear();
 	sx_7.clear();
 	sx_8.clear();
+	sx_12.clear();
+	sx_34.clear();
+	sx_56.clear();
+	sx_78.clear();
+	sx_1234.clear();
+	sx_5678.clear();
+
+	sf_1_2.clear();
+	sf_3_4.clear();
+	sf_5_6.clear();
+	sf_7_8.clear();
+	sf_12_34.clear();
+	sf_56_78.clear();
+	sf_1234_5678.clear();
+
+	ss_1_2.clear();
+	ss_3_4.clear();
+	ss_5_6.clear();
+	ss_7_8.clear();
+	ss_12_34.clear();
+	ss_56_78.clear();
+	ss_1234_5678.clear();
 
 	if( nDataset == 1 ){
 		std::cout << "sx_1_avg\tsx_1_std\t";
@@ -379,11 +584,28 @@ void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vecto
 		std::cout << "sx_6_avg\tsx_6_std\t";
 		std::cout << "sx_7_avg\tsx_7_std\t";
 		std::cout << "sx_8_avg\tsx_8_std\t";
-		
 		std::cout << "sx_12_avg\tsx_12_std\t";
 		std::cout << "sx_34_avg\tsx_34_std\t";
 		std::cout << "sx_56_avg\tsx_56_std\t";
-		std::cout << "sx_78_avg\tsx_78_std\t" << std::endl;
+		std::cout << "sx_78_avg\tsx_78_std\t";
+		std::cout << "sx_1234_avg\tx_1234_std\t";
+		std::cout << "sx_5678_avg\tx_5678_std\t";
+		
+		std::cout << "sf_1_2_avg\tsf_1_2_std\t";
+		std::cout << "sf_3_4_avg\tsf_3_4_std\t";
+		std::cout << "sf_5_6_avg\tsf_5_6_std\t";
+		std::cout << "sf_7_8_avg\tsf_7_8_std\t";
+		std::cout << "sf_12_34_avg\tsf_12_34_std\t";
+		std::cout << "sf_56_78_avg\tsf_56_78_std\t";
+		std::cout << "sf_1234_5678_avg\tsf_1234_5678_std\t";
+		
+		std::cout << "ss_1_2_avg\tss_1_2_std\t";
+		std::cout << "ss_3_4_avg\tss_3_4_std\t";
+		std::cout << "ss_5_6_avg\tss_5_6_std\t";
+		std::cout << "ss_7_8_avg\tss_7_8_std\t";
+		std::cout << "ss_12_34_avg\tss_12_34_std\t";
+		std::cout << "ss_56_78_avg\tss_56_78_std\t";
+		std::cout << "ss_1234_5678_avg\tss_1234_5678_std" << std::endl;
 	}
 	
 	std::cout << mean_sx_1 << "\t" << sd_sx_1 << "\t";
@@ -394,11 +616,28 @@ void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vecto
 	std::cout << mean_sx_6 << "\t" << sd_sx_6 << "\t";
 	std::cout << mean_sx_7 << "\t" << sd_sx_7 << "\t";
 	std::cout << mean_sx_8 << "\t" << sd_sx_8 << "\t";
-	
 	std::cout << mean_sx_12 << "\t" << sd_sx_12 << "\t";
 	std::cout << mean_sx_34 << "\t" << sd_sx_34 << "\t";
 	std::cout << mean_sx_56 << "\t" << sd_sx_56 << "\t";
-	std::cout << mean_sx_78 << "\t" << sd_sx_78 << std::endl;
+	std::cout << mean_sx_78 << "\t" << sd_sx_78 << "\t";
+	std::cout << mean_sx_1234 << "\t" << sd_sx_1234 << "\t";
+	std::cout << mean_sx_5678 << "\t" << sd_sx_5678 << "\t";
+	
+	std::cout << mean_sf_1_2 << "\t" << sd_sf_1_2 << "\t";
+	std::cout << mean_sf_3_4 << "\t" << sd_sf_3_4 << "\t";
+	std::cout << mean_sf_5_6 << "\t" << sd_sf_5_6 << "\t";
+	std::cout << mean_sf_7_8 << "\t" << sd_sf_7_8 << "\t";
+	std::cout << mean_sf_12_34 << "\t" << sd_sf_12_34 << "\t";
+	std::cout << mean_sf_56_78 << "\t" << sd_sf_56_78 << "\t";
+	std::cout << mean_sf_1234_5678 << "\t" << sd_sf_1234_5678 << "\t";
+	
+	std::cout << mean_ss_1_2 << "\t" << sd_ss_1_2 << "\t";
+	std::cout << mean_ss_3_4 << "\t" << sd_ss_3_4 << "\t";
+	std::cout << mean_ss_5_6 << "\t" << sd_ss_5_6 << "\t";
+	std::cout << mean_ss_7_8 << "\t" << sd_ss_7_8 << "\t";
+	std::cout << mean_ss_12_34 << "\t" << sd_ss_12_34 << "\t";
+	std::cout << mean_ss_56_78 << "\t" << sd_ss_56_78 << "\t";
+	std::cout << mean_ss_1234_5678 << "\t" << sd_ss_1234_5678 << std::endl;
 }
 
 void mean_deviation(const std::vector <unsigned int> & tableau, const unsigned int & nLoci, float & mean, float & sd){
