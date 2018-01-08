@@ -6,7 +6,7 @@
 #include <sstream>
 #include <cmath>
 
-void get_sample_sizes(std::vector <unsigned int> & n1, std::vector <unsigned int> & n2, std::vector <unsigned int> & n3, std::vector <unsigned int> & n4, std::vector <unsigned int> & n5, std::vector <unsigned int> & n6, std::vector <unsigned int> & n7, std::vector <unsigned int> & n8, std::vector <unsigned int> & nTot, std::vector <size_t> & nSNPs);
+void get_sample_sizes(std::vector <unsigned int> & n1, std::vector <unsigned int> & n2, std::vector <unsigned int> & n3, std::vector <unsigned int> & n4, std::vector <unsigned int> & n5, std::vector <unsigned int> & n6, std::vector <unsigned int> & n7, std::vector <unsigned int> & n8, std::vector <unsigned int> & nTot, std::vector <size_t> & nSNPs, unsigned int & nLoci);
 
 void compute_stats(const size_t nSNP, const unsigned int nsam1, const unsigned int nsam2, const unsigned int nsam3, const unsigned int nsam4, const unsigned int nsam5, const unsigned int nsam6, const unsigned int nsam7, const unsigned int nsam8, const std::vector <std::string> & block_haplotypes, std::vector <unsigned int> & sx_1, std::vector <unsigned int> & sx_2, std::vector <unsigned int> & sx_3, std::vector <unsigned int> & sx_4, std::vector <unsigned int> & sx_5, std::vector <unsigned int> & sx_6, std::vector <unsigned int> & sx_7, std::vector <unsigned int> & sx_8, std::vector <unsigned int> & sx_12, std::vector <unsigned int> & sx_34, std::vector <unsigned int> & sx_56, std::vector <unsigned int> & sx_78, std::vector <unsigned int> & sx_1234, std::vector <unsigned int> & sx_5678, std::vector <unsigned int> & sf_1_2, std::vector <unsigned int> & sf_3_4, std::vector <unsigned int> & sf_5_6, std::vector <unsigned int> & sf_7_8, std::vector <unsigned int> & sf_12_34, std::vector <unsigned int> & sf_56_78, std::vector <unsigned int> & sf_1234_5678, std::vector <unsigned int> & ss_1_2, std::vector <unsigned int> & ss_3_4, std::vector <unsigned int> & ss_5_6, std::vector <unsigned int> & ss_7_8, std::vector <unsigned int> & ss_12_34, std::vector <unsigned int> & ss_56_78, std::vector <unsigned int> & ss_1234_5678);
 
@@ -20,7 +20,7 @@ void mean_deviation(const std::vector <unsigned int> & tableau, const unsigned i
 int main(int argc, char* argv[]){
 	size_t i(0);
 	unsigned int locus = 0;
-	const unsigned int nLoci = 4;
+	unsigned int nLoci = 0;
 	
 	std::vector <size_t> nSNPs;
 	std::vector <unsigned int> n1;
@@ -33,7 +33,7 @@ int main(int argc, char* argv[]){
 	std::vector <unsigned int> n8;
 	std::vector <unsigned int> nTot;
 
-	get_sample_sizes(n1, n2, n3, n4, n5, n6, n7, n8, nTot, nSNPs);
+	get_sample_sizes(n1, n2, n3, n4, n5, n6, n7, n8, nTot, nSNPs, nLoci);
 
 	for( i=0; i<nLoci; ++i ){
 		nTot.push_back(n1[i]+n2[i]+n3[i]+n4[i]+n5[i]+n6[i]+n7[i]+n8[i]);
@@ -126,7 +126,7 @@ int main(int argc, char* argv[]){
 }
 
 
-void get_sample_sizes(std::vector <unsigned int> & n1, std::vector <unsigned int> & n2, std::vector <unsigned int> & n3, std::vector <unsigned int> & n4, std::vector <unsigned int> & n5, std::vector <unsigned int> & n6, std::vector <unsigned int> & n7, std::vector <unsigned int> & n8, std::vector <unsigned int> & nTot, std::vector <size_t> & nSNPs){
+void get_sample_sizes(std::vector <unsigned int> & n1, std::vector <unsigned int> & n2, std::vector <unsigned int> & n3, std::vector <unsigned int> & n4, std::vector <unsigned int> & n5, std::vector <unsigned int> & n6, std::vector <unsigned int> & n7, std::vector <unsigned int> & n8, std::vector <unsigned int> & nTot, std::vector <size_t> & nSNPs, unsigned int & nLoci){
 	// read the bpfile to get some informations about sample sizes
 	//ex :
 	/*
@@ -169,8 +169,10 @@ void get_sample_sizes(std::vector <unsigned int> & n1, std::vector <unsigned int
 	
 		for( i=0; i<n1.size(); ++i ){
 			nTot.push_back(n1[i]+n2[i]+n3[i]+n4[i]+n5[i]+n6[i]+n7[i]+n8[i]);
-			std::cout << "total number individuals for loci #" << i << " : " << nTot[i] << " (" << nSNPs[i] << " SNPs)" << std::endl;
+//			std::cout << "total number individuals for loci #" << i << " : " << nTot[i] << " (" << nSNPs[i] << " SNPs)" << std::endl;
 		}
+	
+	nLoci = nSNPs.size();
 
 	}else{
 		std::cerr << "Couldn't open bpfile for reading\n";
@@ -575,69 +577,76 @@ void print_stats(const unsigned int & nLoci, const size_t & nDataset, std::vecto
 	ss_56_78.clear();
 	ss_1234_5678.clear();
 
+	std::ofstream ofs;
 	if( nDataset == 1 ){
-		std::cout << "sx_1_avg\tsx_1_std\t";
-		std::cout << "sx_2_avg\tsx_2_std\t";
-		std::cout << "sx_3_avg\tsx_3_std\t";
-		std::cout << "sx_4_avg\tsx_4_std\t";
-		std::cout << "sx_5_avg\tsx_5_std\t";
-		std::cout << "sx_6_avg\tsx_6_std\t";
-		std::cout << "sx_7_avg\tsx_7_std\t";
-		std::cout << "sx_8_avg\tsx_8_std\t";
-		std::cout << "sx_12_avg\tsx_12_std\t";
-		std::cout << "sx_34_avg\tsx_34_std\t";
-		std::cout << "sx_56_avg\tsx_56_std\t";
-		std::cout << "sx_78_avg\tsx_78_std\t";
-		std::cout << "sx_1234_avg\tx_1234_std\t";
-		std::cout << "sx_5678_avg\tx_5678_std\t";
+		ofs.open ("ABCstat_8pop.txt", std::ofstream::out);
+
+		ofs << "sx_1_avg\tsx_1_std\t";
+		ofs << "sx_2_avg\tsx_2_std\t";
+		ofs << "sx_3_avg\tsx_3_std\t";
+		ofs << "sx_4_avg\tsx_4_std\t";
+		ofs << "sx_5_avg\tsx_5_std\t";
+		ofs << "sx_6_avg\tsx_6_std\t";
+		ofs << "sx_7_avg\tsx_7_std\t";
+		ofs << "sx_8_avg\tsx_8_std\t";
+		ofs << "sx_12_avg\tsx_12_std\t";
+		ofs << "sx_34_avg\tsx_34_std\t";
+		ofs << "sx_56_avg\tsx_56_std\t";
+		ofs << "sx_78_avg\tsx_78_std\t";
+		ofs << "sx_1234_avg\tx_1234_std\t";
+		ofs << "sx_5678_avg\tx_5678_std\t";
 		
-		std::cout << "sf_1_2_avg\tsf_1_2_std\t";
-		std::cout << "sf_3_4_avg\tsf_3_4_std\t";
-		std::cout << "sf_5_6_avg\tsf_5_6_std\t";
-		std::cout << "sf_7_8_avg\tsf_7_8_std\t";
-		std::cout << "sf_12_34_avg\tsf_12_34_std\t";
-		std::cout << "sf_56_78_avg\tsf_56_78_std\t";
-		std::cout << "sf_1234_5678_avg\tsf_1234_5678_std\t";
+		ofs << "sf_1_2_avg\tsf_1_2_std\t";
+		ofs << "sf_3_4_avg\tsf_3_4_std\t";
+		ofs << "sf_5_6_avg\tsf_5_6_std\t";
+		ofs << "sf_7_8_avg\tsf_7_8_std\t";
+		ofs << "sf_12_34_avg\tsf_12_34_std\t";
+		ofs << "sf_56_78_avg\tsf_56_78_std\t";
+		ofs << "sf_1234_5678_avg\tsf_1234_5678_std\t";
 		
-		std::cout << "ss_1_2_avg\tss_1_2_std\t";
-		std::cout << "ss_3_4_avg\tss_3_4_std\t";
-		std::cout << "ss_5_6_avg\tss_5_6_std\t";
-		std::cout << "ss_7_8_avg\tss_7_8_std\t";
-		std::cout << "ss_12_34_avg\tss_12_34_std\t";
-		std::cout << "ss_56_78_avg\tss_56_78_std\t";
-		std::cout << "ss_1234_5678_avg\tss_1234_5678_std" << std::endl;
+		ofs << "ss_1_2_avg\tss_1_2_std\t";
+		ofs << "ss_3_4_avg\tss_3_4_std\t";
+		ofs << "ss_5_6_avg\tss_5_6_std\t";
+		ofs << "ss_7_8_avg\tss_7_8_std\t";
+		ofs << "ss_12_34_avg\tss_12_34_std\t";
+		ofs << "ss_56_78_avg\tss_56_78_std\t";
+		ofs << "ss_1234_5678_avg\tss_1234_5678_std" << std::endl;
+		
+		ofs.close();
 	}
 	
-	std::cout << mean_sx_1 << "\t" << sd_sx_1 << "\t";
-	std::cout << mean_sx_2 << "\t" << sd_sx_2 << "\t";
-	std::cout << mean_sx_3 << "\t" << sd_sx_3 << "\t";
-	std::cout << mean_sx_4 << "\t" << sd_sx_4 << "\t";
-	std::cout << mean_sx_5 << "\t" << sd_sx_5 << "\t";
-	std::cout << mean_sx_6 << "\t" << sd_sx_6 << "\t";
-	std::cout << mean_sx_7 << "\t" << sd_sx_7 << "\t";
-	std::cout << mean_sx_8 << "\t" << sd_sx_8 << "\t";
-	std::cout << mean_sx_12 << "\t" << sd_sx_12 << "\t";
-	std::cout << mean_sx_34 << "\t" << sd_sx_34 << "\t";
-	std::cout << mean_sx_56 << "\t" << sd_sx_56 << "\t";
-	std::cout << mean_sx_78 << "\t" << sd_sx_78 << "\t";
-	std::cout << mean_sx_1234 << "\t" << sd_sx_1234 << "\t";
-	std::cout << mean_sx_5678 << "\t" << sd_sx_5678 << "\t";
+	ofs.open ("ABCstat_8pop.txt", std::ofstream::out | std::ofstream::app);
+	ofs << mean_sx_1 << "\t" << sd_sx_1 << "\t";
+	ofs << mean_sx_2 << "\t" << sd_sx_2 << "\t";
+	ofs << mean_sx_3 << "\t" << sd_sx_3 << "\t";
+	ofs << mean_sx_4 << "\t" << sd_sx_4 << "\t";
+	ofs << mean_sx_5 << "\t" << sd_sx_5 << "\t";
+	ofs << mean_sx_6 << "\t" << sd_sx_6 << "\t";
+	ofs << mean_sx_7 << "\t" << sd_sx_7 << "\t";
+	ofs << mean_sx_8 << "\t" << sd_sx_8 << "\t";
+	ofs << mean_sx_12 << "\t" << sd_sx_12 << "\t";
+	ofs << mean_sx_34 << "\t" << sd_sx_34 << "\t";
+	ofs << mean_sx_56 << "\t" << sd_sx_56 << "\t";
+	ofs << mean_sx_78 << "\t" << sd_sx_78 << "\t";
+	ofs << mean_sx_1234 << "\t" << sd_sx_1234 << "\t";
+	ofs << mean_sx_5678 << "\t" << sd_sx_5678 << "\t";
 	
-	std::cout << mean_sf_1_2 << "\t" << sd_sf_1_2 << "\t";
-	std::cout << mean_sf_3_4 << "\t" << sd_sf_3_4 << "\t";
-	std::cout << mean_sf_5_6 << "\t" << sd_sf_5_6 << "\t";
-	std::cout << mean_sf_7_8 << "\t" << sd_sf_7_8 << "\t";
-	std::cout << mean_sf_12_34 << "\t" << sd_sf_12_34 << "\t";
-	std::cout << mean_sf_56_78 << "\t" << sd_sf_56_78 << "\t";
-	std::cout << mean_sf_1234_5678 << "\t" << sd_sf_1234_5678 << "\t";
+	ofs << mean_sf_1_2 << "\t" << sd_sf_1_2 << "\t";
+	ofs << mean_sf_3_4 << "\t" << sd_sf_3_4 << "\t";
+	ofs << mean_sf_5_6 << "\t" << sd_sf_5_6 << "\t";
+	ofs << mean_sf_7_8 << "\t" << sd_sf_7_8 << "\t";
+	ofs << mean_sf_12_34 << "\t" << sd_sf_12_34 << "\t";
+	ofs << mean_sf_56_78 << "\t" << sd_sf_56_78 << "\t";
+	ofs << mean_sf_1234_5678 << "\t" << sd_sf_1234_5678 << "\t";
 	
-	std::cout << mean_ss_1_2 << "\t" << sd_ss_1_2 << "\t";
-	std::cout << mean_ss_3_4 << "\t" << sd_ss_3_4 << "\t";
-	std::cout << mean_ss_5_6 << "\t" << sd_ss_5_6 << "\t";
-	std::cout << mean_ss_7_8 << "\t" << sd_ss_7_8 << "\t";
-	std::cout << mean_ss_12_34 << "\t" << sd_ss_12_34 << "\t";
-	std::cout << mean_ss_56_78 << "\t" << sd_ss_56_78 << "\t";
-	std::cout << mean_ss_1234_5678 << "\t" << sd_ss_1234_5678 << std::endl;
+	ofs << mean_ss_1_2 << "\t" << sd_ss_1_2 << "\t";
+	ofs << mean_ss_3_4 << "\t" << sd_ss_3_4 << "\t";
+	ofs << mean_ss_5_6 << "\t" << sd_ss_5_6 << "\t";
+	ofs << mean_ss_7_8 << "\t" << sd_ss_7_8 << "\t";
+	ofs << mean_ss_12_34 << "\t" << sd_ss_12_34 << "\t";
+	ofs << mean_ss_56_78 << "\t" << sd_ss_56_78 << "\t";
+	ofs << mean_ss_1234_5678 << "\t" << sd_ss_1234_5678 << std::endl;
+	ofs.close();
 }
 
 void mean_deviation(const std::vector <unsigned int> & tableau, const unsigned int & nLoci, float & mean, float & sd){
